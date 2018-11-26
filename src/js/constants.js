@@ -1,0 +1,19 @@
+const DEFAULT_CONTEXT_NAME = "geography";
+
+const BUILDING_TYPE = "Building";
+const FLOOR_TYPE = "Floor";
+const ROOM_TYPE = "Room";
+const ZONE_TYPE = "Zone";
+const GEOGRAPHIC_TYPES = Object.freeze([BUILDING_TYPE, FLOOR_TYPE, ROOM_TYPE]);
+
+const EQUIPMENT_RELATION = "hasEquipment";
+
+export {
+  DEFAULT_CONTEXT_NAME,
+  BUILDING_TYPE,
+  FLOOR_TYPE,
+  ROOM_TYPE,
+  ZONE_TYPE,
+  GEOGRAPHIC_TYPES,
+  EQUIPMENT_RELATION
+};
