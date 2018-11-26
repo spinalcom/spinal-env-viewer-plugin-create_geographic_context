@@ -15,5 +15,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {}
+  "dependencies": {
+    "spinal-env-viewer-panel-manager-service": "https://github.com/spinalcom/spinal-env-viewer-panel-manager-service.git",
+    "spinal-env-viewer-context-menu-service": "https://github.com/spinalcom/spinal-env-viewer-context-menu-service.git",
+    "spinal-env-viewer-plugin-bimobjectservice": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-bimobjectservice.git"
+  }
 }
