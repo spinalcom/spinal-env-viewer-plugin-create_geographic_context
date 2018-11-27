@@ -82,7 +82,15 @@ export default {
   methods: {
     opened(option) {
       this.contextName = this.constants.DEFAULT_CONTEXT_NAME;
+
       this.levels = [];
+      for (let defaultLevel of this.constants.DEFAULT_LEVELS) {
+        this.levels.push({
+          type: defaultLevel.type,
+          key: defaultLevel.key
+        });
+      }
+
       this.showWarnings = false;
       this.showLoad = false;
       this.alertInvalidKeys = false;

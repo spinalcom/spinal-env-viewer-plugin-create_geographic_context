@@ -70,9 +70,7 @@ async function createGeoContextRec(context, parent, children, relationNames, dep
     }
   } else {
     for (let child of children) {
-      promises.push(bimObjectService.createBIMObject(child.dbId, child.name).then(node =>
-        parent.addChildInContext(node, relationNames[depth], SPINAL_RELATION_LST_PTR_TYPE, context)
-      ));
+      promises.push(bimObjectService.addBIMObject(context, parent, child.dbId, child.name));
     }
   }
   await Promise.all(promises);
