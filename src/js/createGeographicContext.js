@@ -1,19 +1,19 @@
 /*
  * Copyright 2018 SpinalCom - www.spinalcom.com
- * 
+ *
  * This file is part of SpinalCore.
- * 
+ *
  * Please read all of the following terms and conditions
  * of the Free Software license Agreement ("Agreement")
  * carefully.
- * 
+ *
  * This Agreement is a legally binding contract between
  * the Licensee (as defined below) and SpinalCom that
  * sets forth the terms and conditions that govern your
  * use of the Program. By installing and/or using the
  * Program, you agree to abide by all the terms and
  * conditions stated or referenced herein.
- * 
+ *
  * If you do not agree to abide by these terms and
  * conditions, do not demonstrate your acceptance and do
  * not install or use the Program.
@@ -25,6 +25,7 @@
 import {
   SpinalNode,
   SpinalContext,
+  SpinalGraph,
   SPINAL_RELATION_TYPE,
   SPINAL_RELATION_LST_PTR_TYPE
 } from "spinalgraph";
@@ -53,7 +54,8 @@ async function createContext(name) {
   return context;
 }
 
-async function createGeoContextRec(context, parent, children, relationNames, depth) {
+async function createGeoContextRec(context, parent, children, relationNames,
+  depth) {
   let promises = [];
 
   if (children instanceof Map) {
@@ -65,12 +67,14 @@ async function createGeoContextRec(context, parent, children, relationNames, dep
           SPINAL_RELATION_LST_PTR_TYPE,
           context
         ).then(node =>
-          createGeoContextRec(context, node, value, relationNames, depth + 1)
+          createGeoContextRec(context, node, value, relationNames, depth +
+            1)
         ));
     }
   } else {
     for (let child of children) {
-      promises.push(bimObjectService.addBIMObject(context, parent, child.dbId, child.name));
+      promises.push(bimObjectService.addBIMObject(context, parent, child.dbId,
+        child.name));
     }
   }
   await Promise.all(promises);
@@ -85,9 +89,9 @@ async function createGeoContextRec(context, parent, children, relationNames, dep
  */
 async function createGeoContext(contextName, layout, relationNames) {
   const promiseResults = await Promise.all([
-    hasProperties(getAllDbIds(), layout),// Get all useful properties
-    createContext(contextName),// Create the geographic context
-    bimObjectService.getContext()// Create BIMObjectContext if it isn't already done
+    hasProperties(getAllDbIds(), layout), // Get all useful properties
+    createContext(contextName), // Create the geographic context
+    bimObjectService.getContext() // Create BIMObjectContext if it isn't already done
   ]);
 
   const props = promiseResults[0].valid;

@@ -80,7 +80,7 @@ export default {
     };
   },
   methods: {
-    opened(option) {
+    opened() {
       this.contextName = this.constants.DEFAULT_CONTEXT_NAME;
 
       this.levels = [];
@@ -95,7 +95,7 @@ export default {
       this.showLoad = false;
       this.alertInvalidKeys = false;
     },
-    removed(option) {
+    removed() {
       this.showDialog = false;
     },
     async closeDialog(closeResult) {

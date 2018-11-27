@@ -112,8 +112,9 @@ export default {
       const maxTypeIndex = this.getMaxTypeIndex(index);
       const available = [];
 
-      for (let i = minTypeIndex; i < maxTypeIndex; i++)
+      for (let i = minTypeIndex; i < maxTypeIndex; i++) {
         available.push(this.constants.GEOGRAPHIC_TYPES[i]);
+      }
       return available.concat(this.constants.ZONE_TYPE);
     }
   }
