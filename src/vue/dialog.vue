@@ -23,35 +23,23 @@ with this file. If not, see
 -->
 
 <template>
-  <div>
-    <md-dialog :md-active.sync="showDialog"
-               @md-closed="closeDialog(false)"
-               id="dialog-create-geographic-context">
-      <md-dialog-title>Configuration</md-dialog-title>
+  <div id="panel-generate-geographic-context">
+    <md-field>
+      <label>Name of the context</label>
+      <md-input v-model="contextName" />
+    </md-field>
 
-      <md-dialog-content>
-        <md-field>
-          <label>Name of the context</label>
-          <md-input v-model="contextName" />
-        </md-field>
+    <level-list :constants="constants"
+                :levels="levels"
+                :show-warnings="showWarnings" />
 
-        <level-list :constants="constants"
-                    :levels="levels"
-                    :show-warnings="showWarnings" />
+    <md-button class="md-primary"
+               @click="generateContext">Start</md-button>
 
-        <div v-if="showLoad"
-             id="md-progress-spinner-div">
-          <md-progress-spinner md-mode="indeterminate" />
-        </div>
-      </md-dialog-content>
-
-      <md-dialog-actions>
-        <md-button class="md-primary"
-                   @click="closeDialog(false)">Cancel</md-button>
-        <md-button class="md-primary"
-                   @click="closeDialog(true)">Start</md-button>
-      </md-dialog-actions>
-    </md-dialog>
+    <div v-if="showLoad"
+         id="md-progress-spinner-div">
+      <md-progress-spinner md-mode="indeterminate" />
+    </div>
 
     <md-dialog-alert :md-active.sync="alertInvalidKeys"
                      md-content="Some fields are not filled"
@@ -65,7 +53,6 @@ import createGeoContext from "../js/createGeographicContext";
 
 export default {
   name: "dialogCreateGeographicContext",
-  props: ["onFinised"],
   components: {
     levelList
   },
@@ -95,31 +82,27 @@ export default {
       this.showLoad = false;
       this.alertInvalidKeys = false;
     },
-    removed() {
-      this.showDialog = false;
-    },
-    async closeDialog(closeResult) {
-      if (closeResult) {
-        let layout = [];
-        let relations = [];
+    removed() {},
+    closed() {},
+    async generateContext() {
+      let layout = [];
+      let relations = [];
 
-        this.highlightKeys = false;
-        for (let level of this.levels) {
-          if (level.key === "" || level.type === "") {
-            this.alertInvalidKeys = true;
-            this.showWarnings = true;
-            return;
-          }
-          layout.push(level.key);
-          relations.push("has" + level.type);
+      this.highlightKeys = false;
+      for (let level of this.levels) {
+        if (level.key === "" || level.type === "") {
+          this.alertInvalidKeys = true;
+          this.showWarnings = true;
+          return;
         }
-        relations.push(this.constants.EQUIPMENT_RELATION);
-
-        this.showLoad = true;
-        await createGeoContext(this.contextName, layout, relations);
-        this.showLoad = false;
+        layout.push(level.key);
+        relations.push("has" + level.type);
       }
-      if (typeof this.onFinised === "function") this.onFinised("hello");
+      relations.push(this.constants.EQUIPMENT_RELATION);
+
+      this.showLoad = true;
+      await createGeoContext(this.contextName, layout, relations);
+      this.showLoad = false;
     }
   },
   created() {
@@ -134,13 +117,10 @@ export default {
 }
 </style>
 
-
 <style scoped>
-.md-dialog-title {
-  text-align: center;
-}
-
-#dialog-create-geographic-context {
+#panel-generate-geographic-context {
+  margin-left: 20px;
+  margin-top: 20px;
   min-width: 600px;
   width: 60vw;
 }

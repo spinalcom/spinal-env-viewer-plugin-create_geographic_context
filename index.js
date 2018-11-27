@@ -22,10 +22,8 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import {
-  spinalPanelManagerService,
-  SpinalMountExtention
-} from "spinal-env-viewer-panel-manager-service";
+import {spinalPanelManagerService} from "spinal-env-viewer-panel-manager-service";
+import {SpinalForgeExtention} from "spinal-env-viewer-panel-manager-service_spinalforgeextention";
 
 import Vue from "vue";
 import dialog from "./src/vue/dialog.vue";
@@ -34,11 +32,23 @@ import {
   SpinalContextApp
 } from "spinal-env-viewer-context-menu-service";
 
-SpinalMountExtention.mount({
-  name: "CreateGeographicContextDialog",
+const extentionCreated = SpinalForgeExtention.createExtention({
+  name: "generate_geographic_context",
   vueMountComponent: Vue.extend(dialog),
-  parentContainer: document.body
+  panel: {
+    title: "Generate a Geographic Context",
+    classname: "gen-geo-context",
+    closeBehaviour: "hide"
+  },
+  style: {
+    left: "405px"
+  },
+  onload: () => {},
+  onUnLoad: () => {}
 });
+
+SpinalForgeExtention.registerExtention("generate_geographic_context",
+  extentionCreated);
 
 class TestButton extends SpinalContextApp {
   constructor() {
@@ -55,7 +65,7 @@ class TestButton extends SpinalContextApp {
   }
 
   action() {
-    spinalPanelManagerService.openPanel("CreateGeographicContextDialog");
+    spinalPanelManagerService.openPanel("generate_geographic_context");
   }
 }
 
