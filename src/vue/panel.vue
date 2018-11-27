@@ -33,6 +33,8 @@ with this file. If not, see
                 :levels="levels"
                 :show-warnings="showWarnings" />
 
+    <referencial-selection :referencial="referencial" />
+
     <md-button class="md-primary"
                @click="generateContext">Start</md-button>
 
@@ -49,18 +51,21 @@ with this file. If not, see
 
 <script>
 import levelList from "./levelList.vue";
+import referencialSelection from "./referencialSelection.vue";
 import createGeoContext from "../js/createGeographicContext";
 
 export default {
   name: "dialogCreateGeographicContext",
   components: {
-    levelList
+    levelList,
+    referencialSelection
   },
   data() {
     return {
       showDialog: true,
       contextName: "",
       levels: [],
+      referencial: [],
       showWarnings: false,
       showLoad: false,
       alertInvalidKeys: false
@@ -101,7 +106,12 @@ export default {
       relations.push(this.constants.EQUIPMENT_RELATION);
 
       this.showLoad = true;
-      await createGeoContext(this.contextName, layout, relations);
+      await createGeoContext(
+        this.contextName,
+        layout,
+        relations,
+        this.referencial
+      );
       this.showLoad = false;
     }
   },

@@ -85,17 +85,23 @@ async function createGeoContextRec(context, parent, children, relationNames,
  * @param {String} contextName Name of the context
  * @param {Array<String>} layout Keys of the properties to use to locate the equipment
  * @param {Array<String>} relationNames Relation names of the context
+ * @param {Array<Number>} referencial DbIds to use
  * @return {SpinalContext} The geographic context
  */
-async function createGeoContext(contextName, layout, relationNames) {
+async function createGeoContext(contextName, layout, relationNames, referencial) {
+  referencial = getAllDbIds();
   const promiseResults = await Promise.all([
-    hasProperties(getAllDbIds(), layout), // Get all useful properties
+    hasProperties(referencial, layout), // Get all useful properties
     createContext(contextName), // Create the geographic context
     bimObjectService.getContext() // Create BIMObjectContext if it isn't already done
   ]);
 
   const props = promiseResults[0].valid;
   const context = promiseResults[1];
+
+  if (props.length === 0) {
+    return context;
+  }
 
   const tmpTree = createTmpTree(props);
 

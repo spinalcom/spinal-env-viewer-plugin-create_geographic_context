@@ -26,7 +26,7 @@ import {spinalPanelManagerService} from "spinal-env-viewer-panel-manager-service
 import {SpinalForgeExtention} from "spinal-env-viewer-panel-manager-service_spinalforgeextention";
 
 import Vue from "vue";
-import dialog from "./src/vue/dialog.vue";
+import panel from "./src/vue/panel.vue";
 import {
   spinalContextMenuService,
   SpinalContextApp
@@ -34,7 +34,7 @@ import {
 
 const extentionCreated = SpinalForgeExtention.createExtention({
   name: "generate_geographic_context",
-  vueMountComponent: Vue.extend(dialog),
+  vueMountComponent: Vue.extend(panel),
   panel: {
     title: "Generate a Geographic Context",
     classname: "gen-geo-context",
