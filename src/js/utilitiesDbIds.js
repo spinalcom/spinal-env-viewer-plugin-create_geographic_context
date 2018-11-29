@@ -22,12 +22,28 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-function getAllDbIds() {
+function getInstanceTree() {
   const model = window.spinal.ForgeViewer.viewer.model;
   const tree = model.getData().instanceTree;
-  const rootId = tree.getRootId();
-  let queue = [rootId];
-  let dbIds = [rootId];
+
+  return tree;
+}
+
+function getDbIds(rootId) {
+  const tree = getInstanceTree();
+  const dbIds = [];
+
+  tree.enumNodeChildren(rootId, dbId => {
+    dbIds.push(dbId);
+  });
+
+  return dbIds;
+}
+
+function getDbIdsRec(rootId) {
+  const tree = getInstanceTree();
+  const queue = [rootId];
+  const dbIds = [];
 
   while (queue.length) {
     let id = queue.shift();
@@ -40,4 +56,47 @@ function getAllDbIds() {
   return dbIds;
 }
 
-export default getAllDbIds;
+function getLeafDbIds(rootId) {
+  const tree = getInstanceTree();
+  const queue = [rootId];
+  const dbIds = [];
+  let hasChildren;
+
+  while (queue.length) {
+    let id = queue.shift();
+
+    hasChildren = false;
+
+    tree.enumNodeChildren(id, childId => {
+      hasChildren = true;
+      queue.push(childId);
+    });
+    if (!hasChildren) {
+      dbIds.push(id);
+    }
+  }
+  return dbIds;
+}
+
+function getAllDbIds() {
+  const tree = getInstanceTree();
+  const rootId = tree.getRootId();
+
+  return getDbIdsRec(rootId);
+}
+
+function getAllLeafDbIds() {
+  const tree = getInstanceTree();
+  const rootId = tree.getRootId();
+
+  return getLeafDbIds(rootId);
+}
+
+export {
+  getInstanceTree,
+  getDbIds,
+  getDbIdsRec,
+  getLeafDbIds,
+  getAllDbIds,
+  getAllLeafDbIds
+};

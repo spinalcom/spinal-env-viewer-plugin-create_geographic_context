@@ -44,7 +44,7 @@ with this file. If not, see
 </template>
 
 <script>
-import getAllDbIds from "../js/getAllDbIds";
+import { getAllLeafDbIds } from "../js/utilitiesDbIds";
 
 export default {
   name: "referentialSelection",
@@ -95,7 +95,7 @@ export default {
   },
   created() {
     this.viewer = window.spinal.ForgeViewer.viewer;
-    this.allDbIds = getAllDbIds();
+    this.allDbIds = getAllLeafDbIds();
     this.referencial.push(...this.allDbIds);
   }
 };
