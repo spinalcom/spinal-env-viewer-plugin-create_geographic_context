@@ -59,7 +59,7 @@ class GenerateGeoContext extends SpinalContextApp {
     super("Generate a geographic context", "Generates a geographic context", {
       icon: "build",
       icon_type: "in",
-      backgroundColor: "#0000FF",
+      backgroundColor: "rgba(0, 0, 0, 0)",
       fontColor: "#FFFFFF"
     });
   }
