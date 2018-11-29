@@ -23,47 +23,56 @@ with this file. If not, see
 -->
 
 <template>
-  <div id="panel-generate-geographic-context">
-    <level-list :constants="constants"
-                :levels="levels"
-                :show-warnings="showWarnings" />
+  <md-steppers id="panel-generate-geographic-context"
+               @md-changed="(id) => {if (id === 'layout') layoutError = null}">
+    <md-step class="step"
+             id="ref"
+             md-label="Choose referential">
+      <referencial-selection :referencial="referencial" />
+    </md-step>
 
-    <referencial-selection :referencial="referencial" />
+    <md-step class="step"
+             id="layout"
+             md-label="Create layout"
+             :md-error="layoutError">
+      <level-list :constants="constants"
+                  :levels="levels"
+                  :show-warnings="layoutError !== null" />
+    </md-step>
 
-    <md-button class="md-primary"
-               @click="generateContext">Start</md-button>
+    <md-step class="step"
+             id="launch"
+             md-label="Launch the generation">
+      <md-button class="md-primary"
+                 @click="generateContext">Start</md-button>
 
-    <div v-if="showLoad"
-         id="md-progress-spinner-div">
-      <md-progress-spinner md-mode="indeterminate" />
-    </div>
-
-    <md-dialog-alert :md-active.sync="alertInvalidKeys"
-                     md-content="Some fields are not filled"
-                     md-confirm-text="OK" />
-  </div>
+      <div v-if="showLoad"
+           id="md-progress-spinner-div">
+        <md-progress-spinner md-mode="indeterminate" />
+      </div>
+    </md-step>
+  </md-steppers>
 </template>
 
 <script>
-import levelList from "./levelList.vue";
 import referencialSelection from "./referencialSelection.vue";
+import levelList from "./levelList.vue";
 import createGeoContext from "../js/createGeographicContext";
 
 export default {
   name: "dialogCreateGeographicContext",
   components: {
-    levelList,
-    referencialSelection
+    referencialSelection,
+    levelList
   },
   data() {
     return {
       showDialog: true,
       context: null,
-      levels: [],
       referencial: [],
-      showWarnings: false,
-      showLoad: false,
-      alertInvalidKeys: false
+      levels: [],
+      layoutError: null,
+      showLoad: false
     };
   },
   methods: {
@@ -78,38 +87,35 @@ export default {
         });
       }
 
-      this.showWarnings = false;
+      this.layoutError = null;
       this.showLoad = false;
-      this.alertInvalidKeys = false;
     },
     removed() {},
     closed() {},
-    async generateContext() {
-      let types = [];
-      let layout = [];
-      let relations = [];
+    getLayout() {
+      let layout = { types: [], keys: [], relations: [] };
 
-      this.highlightKeys = false;
       for (let level of this.levels) {
         if (level.key === "" || level.type === "") {
-          this.alertInvalidKeys = true;
-          this.showWarnings = true;
-          return;
+          this.layoutError = "Incomplete layout";
+          return null;
         }
-        types.push(this.constants.MAP_TYPES.get(level.type));
-        layout.push(level.key);
-        relations.push(this.constants.MAP_RELATIONS.get(level.type));
+        layout.types.push(this.constants.MAP_TYPES.get(level.type));
+        layout.keys.push(level.key);
+        layout.relations.push(this.constants.MAP_RELATIONS.get(level.type));
       }
-      relations.push(this.constants.EQUIPMENT_RELATION);
+      layout.relations.push(this.constants.EQUIPMENT_RELATION);
+      return layout;
+    },
+    async generateContext() {
+      const layout = this.getLayout();
+
+      if (layout === null) {
+        return;
+      }
 
       this.showLoad = true;
-      await createGeoContext(
-        this.context,
-        types,
-        layout,
-        relations,
-        this.referencial
-      );
+      await createGeoContext(this.context, layout, this.referencial);
       this.showLoad = false;
     }
   },
@@ -126,9 +132,11 @@ export default {
 </style>
 
 <style scoped>
+.step {
+  box-sizing: border-box;
+}
+
 #panel-generate-geographic-context {
-  margin-left: 20px;
-  margin-top: 20px;
   min-width: 600px;
   width: 60vw;
 }

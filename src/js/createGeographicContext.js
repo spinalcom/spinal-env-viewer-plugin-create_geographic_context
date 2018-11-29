@@ -32,23 +32,19 @@ import getAllDbIds from "./getAllDbIds";
 import hasProperties from "./hasProperties";
 import createTmpTree from "./createTmpTree";
 
-async function createGeoContextRec(context, parent, children, types,
-  relationNames,
-  depth) {
+async function createGeoContextRec(context, parent, children, layout, depth) {
   let promises = [];
 
   if (children instanceof Map) {
     for (let [name, value] of children) {
       promises.push(
         parent.addChildInContext(
-          new SpinalNode(name, types[depth]),
-          relationNames[depth],
+          new SpinalNode(name, layout.types[depth]),
+          layout.relations[depth],
           SPINAL_RELATION_TYPE,
           context
         ).then(node =>
-          createGeoContextRec(context, node, value, types, relationNames,
-            depth +
-            1)
+          createGeoContextRec(context, node, value, layout, depth + 1)
         ));
     }
   } else {
@@ -63,17 +59,14 @@ async function createGeoContextRec(context, parent, children, types,
 /**
  * Creates a geographic context using the autodesk forge object tree.
  * @param {SpinalContext} context Context to fill
- * @param {Array<String>} types Types of the nodes
- * @param {Array<String>} layout Keys of the properties to use to locate the equipment
- * @param {Array<String>} relationNames Relation names of the context
+ * @param {Object} layout Object containing the types, keys and relation names necessary to create the context
  * @param {Array<Number>} referencial DbIds to use
  * @return {SpinalContext} The geographic context
  */
-async function createGeoContext(context, types, layout, relationNames,
-  referencial) {
+async function createGeoContext(context, layout, referencial) {
   referencial = getAllDbIds();
   const promiseResults = await Promise.all([
-    hasProperties(referencial, layout), // Get all useful properties
+    hasProperties(referencial, layout.keys), // Get all useful properties
     bimObjectService.getContext() // Create BIMObjectContext if it isn't already done
   ]);
 
@@ -85,8 +78,7 @@ async function createGeoContext(context, types, layout, relationNames,
 
   const tmpTree = createTmpTree(props);
 
-  await createGeoContextRec(context, context, tmpTree, types, relationNames,
-    0);
+  await createGeoContextRec(context, context, tmpTree, layout, 0);
 }
 
 export default createGeoContext;
