@@ -32,7 +32,7 @@ import {getAllLeafDbIds} from "./utilitiesDbIds";
 import hasProperties from "./hasProperties";
 import createTmpTree from "./createTmpTree";
 
-async function createGeoContextRec(context, parent, children, layout, depth) {
+async function GenerateGeoContextRec(context, parent, children, layout, depth) {
   let promises = [];
 
   if (children instanceof Map) {
@@ -44,7 +44,7 @@ async function createGeoContextRec(context, parent, children, layout, depth) {
           SPINAL_RELATION_TYPE,
           context
         ).then(node =>
-          createGeoContextRec(context, node, value, layout, depth + 1)
+          GenerateGeoContextRec(context, node, value, layout, depth + 1)
         ));
     }
   } else {
@@ -57,13 +57,13 @@ async function createGeoContextRec(context, parent, children, layout, depth) {
 }
 
 /**
- * Creates a geographic context using the autodesk forge object tree.
+ * Generates a geographic context using the autodesk forge object tree.
  * @param {SpinalContext} context Context to fill
- * @param {Object} layout Object containing the types, keys and relation names necessary to create the context
+ * @param {Object} layout Object containing the types, keys and relation names necessary to generate the context
  * @param {Array<Number>} referencial DbIds to use
  * @return {SpinalContext} The geographic context
  */
-async function createGeoContext(context, layout, referencial) {
+async function GenerateGeoContext(context, layout, referencial) {
   referencial = getAllLeafDbIds();
   const promiseResults = await Promise.all([
     hasProperties(referencial, layout.keys), // Get all useful properties
@@ -78,7 +78,7 @@ async function createGeoContext(context, layout, referencial) {
 
   const tmpTree = createTmpTree(props);
 
-  await createGeoContextRec(context, context, tmpTree, layout, 0);
+  await GenerateGeoContextRec(context, context, tmpTree, layout, 0);
 }
 
-export default createGeoContext;
+export default GenerateGeoContext;

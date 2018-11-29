@@ -57,7 +57,7 @@ with this file. If not, see
 <script>
 import referencialSelection from "./referencialSelection.vue";
 import levelList from "./levelList.vue";
-import createGeoContext from "../js/createGeographicContext";
+import generateGeoContext from "../js/generateGeographicContext";
 
 export default {
   name: "dialogCreateGeographicContext",
@@ -115,7 +115,7 @@ export default {
       }
 
       this.showLoad = true;
-      await createGeoContext(this.context, layout, this.referencial);
+      await generateGeoContext(this.context, layout, this.referencial);
       this.showLoad = false;
     }
   },

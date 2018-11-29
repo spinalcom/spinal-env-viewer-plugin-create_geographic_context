@@ -1,5 +1,5 @@
 {
-  "name": "spinal-env-viewer-plugin-create_geographic_context",
+  "name": "spinal-env-viewer-plugin-generate_geographic_context",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
