@@ -24,6 +24,7 @@ with this file. If not, see
 
 <template>
   <md-steppers id="panel-generate-geographic-context"
+               :md-active-step.sync="activeStep"
                @md-changed="(id) => {if (id === 'layout') layoutError = null}">
     <md-step class="step"
              id="ref"
@@ -43,12 +44,13 @@ with this file. If not, see
     <md-step class="step"
              id="launch"
              md-label="Launch the generation">
-      <md-button class="md-primary"
-                 @click="generateContext">Start</md-button>
+      <div id="launch-step">
+        <md-button v-if="!showLoad"
+                   class="md-raised md-primary"
+                   @click="generateContext">Start</md-button>
 
-      <div v-if="showLoad"
-           id="md-progress-spinner-div">
-        <md-progress-spinner md-mode="indeterminate" />
+        <md-progress-spinner v-else
+                             md-mode="indeterminate" />
       </div>
     </md-step>
   </md-steppers>
@@ -69,6 +71,7 @@ export default {
     return {
       showDialog: true,
       context: null,
+      activeStep: "",
       referencial: [],
       levels: [],
       layoutError: null,
@@ -78,6 +81,8 @@ export default {
   methods: {
     opened(option) {
       this.context = option.context;
+
+      this.activeStep = "ref";
 
       this.levels = [];
       for (let defaultLevel of this.constants.DEFAULT_LEVELS) {
@@ -141,8 +146,7 @@ export default {
   width: 60vw;
 }
 
-#md-progress-spinner-div {
-  width: 100%;
+#launch-step {
   text-align: center;
 }
 </style>

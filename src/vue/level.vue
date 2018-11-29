@@ -46,7 +46,8 @@ with this file. If not, see
       <md-input v-model="level.key" />
     </md-field>
 
-    <md-button @click="$emit('removeLevel')">
+    <md-button class="md-icon-button"
+               @click="$emit('removeLevel')">
       <md-icon>remove</md-icon>
     </md-button>
   </div>

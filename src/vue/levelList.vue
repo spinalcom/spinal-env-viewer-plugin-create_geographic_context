@@ -24,16 +24,15 @@ with this file. If not, see
 
 <template>
   <div>
-    <div id="div-v-for-levels"
-         v-for="(level, index) in levels"
-         :key="index">
-      <level :level="level"
-             :available-types="getAvailableTypes(index)"
-             :show-warning="showWarnings"
-             @removeLevel="removeLevel(index)" />
-    </div>
+    <level v-for="(level, index) in levels"
+           :key="index"
+           :level="level"
+           :available-types="getAvailableTypes(index)"
+           :show-warning="showWarnings"
+           @removeLevel="removeLevel(index)" />
 
-    <md-button @click="addLevel">
+    <md-button @click="addLevel"
+               id="button-add-level">
       <md-icon>add</md-icon>
     </md-button>
   </div>
@@ -120,3 +119,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+#button-add-level {
+  width: 100%;
+}
+</style>
