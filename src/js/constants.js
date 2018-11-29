@@ -1,12 +1,35 @@
-const DEFAULT_CONTEXT_NAME = "geography";
+import ContextGeographicService from "spinal-env-viewer-context-geographic-service";
+
+const geoConstants = ContextGeographicService.constants;
+
+const {
+  EQUIPMENT_RELATION
+} = geoConstants;
 
 const BUILDING_TYPE = "Building";
 const FLOOR_TYPE = "Floor";
-const ROOM_TYPE = "Room";
 const ZONE_TYPE = "Zone";
-const GEOGRAPHIC_TYPES = Object.freeze([BUILDING_TYPE, FLOOR_TYPE, ROOM_TYPE]);
+const ROOM_TYPE = "Room";
 
-const EQUIPMENT_RELATION = "hasEquipment";
+const GEOGRAPHIC_TYPES = Object.freeze([
+  BUILDING_TYPE,
+  FLOOR_TYPE,
+  ROOM_TYPE
+]);
+
+const MAP_TYPES = Object.freeze(new Map([
+  [BUILDING_TYPE, geoConstants.BUILDING_TYPE],
+  [FLOOR_TYPE, geoConstants.FLOOR_TYPE],
+  [ZONE_TYPE, geoConstants.ZONE_TYPE],
+  [ROOM_TYPE, geoConstants.ROOM_TYPE],
+]));
+
+const MAP_RELATIONS = Object.freeze(new Map([
+  [BUILDING_TYPE, geoConstants.BUILDING_RELATION],
+  [FLOOR_TYPE, geoConstants.FLOOR_RELATION],
+  [ZONE_TYPE, geoConstants.ZONE_RELATION],
+  [ROOM_TYPE, geoConstants.ROOM_RELATION],
+]));
 
 const DEFAULT_LEVELS = Object.freeze([
   Object.freeze({
@@ -24,16 +47,17 @@ const DEFAULT_LEVELS = Object.freeze([
   Object.freeze({
     type: ROOM_TYPE,
     key: ROOM_TYPE
-  }),
+  })
 ]);
 
 export {
-  DEFAULT_CONTEXT_NAME,
+  EQUIPMENT_RELATION,
   BUILDING_TYPE,
   FLOOR_TYPE,
-  ROOM_TYPE,
   ZONE_TYPE,
+  ROOM_TYPE,
   GEOGRAPHIC_TYPES,
-  EQUIPMENT_RELATION,
+  MAP_TYPES,
+  MAP_RELATIONS,
   DEFAULT_LEVELS
 };

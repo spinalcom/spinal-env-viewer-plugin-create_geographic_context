@@ -24,11 +24,6 @@ with this file. If not, see
 
 <template>
   <div id="panel-generate-geographic-context">
-    <md-field>
-      <label>Name of the context</label>
-      <md-input v-model="contextName" />
-    </md-field>
-
     <level-list :constants="constants"
                 :levels="levels"
                 :show-warnings="showWarnings" />
@@ -63,7 +58,7 @@ export default {
   data() {
     return {
       showDialog: true,
-      contextName: "",
+      context: null,
       levels: [],
       referencial: [],
       showWarnings: false,
@@ -72,8 +67,8 @@ export default {
     };
   },
   methods: {
-    opened() {
-      this.contextName = this.constants.DEFAULT_CONTEXT_NAME;
+    opened(option) {
+      this.context = option.context;
 
       this.levels = [];
       for (let defaultLevel of this.constants.DEFAULT_LEVELS) {
@@ -90,6 +85,7 @@ export default {
     removed() {},
     closed() {},
     async generateContext() {
+      let types = [];
       let layout = [];
       let relations = [];
 
@@ -100,14 +96,16 @@ export default {
           this.showWarnings = true;
           return;
         }
+        types.push(this.constants.MAP_TYPES.get(level.type));
         layout.push(level.key);
-        relations.push("has" + level.type);
+        relations.push(this.constants.MAP_RELATIONS.get(level.type));
       }
       relations.push(this.constants.EQUIPMENT_RELATION);
 
       this.showLoad = true;
       await createGeoContext(
-        this.contextName,
+        this.context,
+        types,
         layout,
         relations,
         this.referencial

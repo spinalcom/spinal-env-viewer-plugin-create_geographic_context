@@ -24,10 +24,7 @@
 
 import {
   SpinalNode,
-  SpinalContext,
-  SpinalGraph,
-  SPINAL_RELATION_TYPE,
-  SPINAL_RELATION_LST_PTR_TYPE
+  SPINAL_RELATION_TYPE
 } from "spinalgraph";
 import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
 
@@ -35,26 +32,8 @@ import getAllDbIds from "./getAllDbIds";
 import hasProperties from "./hasProperties";
 import createTmpTree from "./createTmpTree";
 
-async function createContext(name) {
-  const forgefile = await window.spinal.spinalSystem.getModel();
-  let graph;
-  let context;
-
-  if (typeof forgefile.graph === "undefined") {
-    forgefile.graph = new SpinalGraph();
-  }
-  graph = forgefile.graph;
-  context = await graph.getContext(name);
-
-  if (typeof context !== "undefined") {
-    await graph.removeChild(context, "hasContext", SPINAL_RELATION_TYPE);
-  }
-  context = new SpinalContext(name);
-  await graph.addContext(context);
-  return context;
-}
-
-async function createGeoContextRec(context, parent, children, relationNames,
+async function createGeoContextRec(context, parent, children, types,
+  relationNames,
   depth) {
   let promises = [];
 
@@ -62,12 +41,13 @@ async function createGeoContextRec(context, parent, children, relationNames,
     for (let [name, value] of children) {
       promises.push(
         parent.addChildInContext(
-          new SpinalNode(name),
+          new SpinalNode(name, types[depth]),
           relationNames[depth],
-          SPINAL_RELATION_LST_PTR_TYPE,
+          SPINAL_RELATION_TYPE,
           context
         ).then(node =>
-          createGeoContextRec(context, node, value, relationNames, depth +
+          createGeoContextRec(context, node, value, types, relationNames,
+            depth +
             1)
         ));
     }
@@ -82,32 +62,31 @@ async function createGeoContextRec(context, parent, children, relationNames,
 
 /**
  * Creates a geographic context using the autodesk forge object tree.
- * @param {String} contextName Name of the context
+ * @param {SpinalContext} context Context to fill
+ * @param {Array<String>} types Types of the nodes
  * @param {Array<String>} layout Keys of the properties to use to locate the equipment
  * @param {Array<String>} relationNames Relation names of the context
  * @param {Array<Number>} referencial DbIds to use
  * @return {SpinalContext} The geographic context
  */
-async function createGeoContext(contextName, layout, relationNames, referencial) {
+async function createGeoContext(context, types, layout, relationNames,
+  referencial) {
   referencial = getAllDbIds();
   const promiseResults = await Promise.all([
     hasProperties(referencial, layout), // Get all useful properties
-    createContext(contextName), // Create the geographic context
     bimObjectService.getContext() // Create BIMObjectContext if it isn't already done
   ]);
 
   const props = promiseResults[0].valid;
-  const context = promiseResults[1];
 
   if (props.length === 0) {
-    return context;
+    return;
   }
 
   const tmpTree = createTmpTree(props);
 
-  await createGeoContextRec(context, context, tmpTree, relationNames, 0);
-
-  return context;
+  await createGeoContextRec(context, context, tmpTree, types, relationNames,
+    0);
 }
 
 export default createGeoContext;
