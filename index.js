@@ -22,15 +22,19 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import {spinalPanelManagerService} from "spinal-env-viewer-panel-manager-service";
-import {SpinalForgeExtention} from "spinal-env-viewer-panel-manager-service_spinalforgeextention";
-
 import Vue from "vue";
-import panel from "./src/vue/panel.vue";
+
+import {SpinalContext} from "spinalgraph";
+
 import {
   spinalContextMenuService,
   SpinalContextApp
 } from "spinal-env-viewer-context-menu-service";
+import {spinalPanelManagerService} from "spinal-env-viewer-panel-manager-service";
+import {SpinalForgeExtention} from "spinal-env-viewer-panel-manager-service_spinalforgeextention";
+import GeographicContextService from "spinal-env-viewer-context-geographic-service";
+
+import panel from "./src/vue/panel.vue";
 
 const extentionCreated = SpinalForgeExtention.createExtention({
   name: "generate_geographic_context",
@@ -50,26 +54,34 @@ const extentionCreated = SpinalForgeExtention.createExtention({
 SpinalForgeExtention.registerExtention("generate_geographic_context",
   extentionCreated);
 
-class TestButton extends SpinalContextApp {
+class GenerateGeoContext extends SpinalContextApp {
   constructor() {
-    super("Create a geographic context", "Creates a geographic context", {
-      icon: "account_balance",
+    super("Generate a geographic context", "Generates a geographic context", {
+      icon: "build",
       icon_type: "in",
       backgroundColor: "#0000FF",
       fontColor: "#FFFFFF"
     });
   }
 
-  isShown() {
-    return Promise.resolve(true);
+  isShown(option) {
+    const context = option.selectedNode;
+
+    if (context instanceof SpinalContext &&
+      context.getType().get() === GeographicContextService.constants.CONTEXT_TYPE
+    ) {
+      return Promise.resolve(true);
+    }
+
+    return Promise.resolve(-1);
   }
 
-  action() {
-    spinalPanelManagerService.openPanel("generate_geographic_context");
+  action(option) {
+    spinalPanelManagerService.openPanel("generate_geographic_context", option);
   }
 }
 
 spinalContextMenuService.registerApp(
-  "GraphManagerGlobalBar",
-  new TestButton()
+  "GraphManagerSideBar",
+  new GenerateGeoContext()
 );
