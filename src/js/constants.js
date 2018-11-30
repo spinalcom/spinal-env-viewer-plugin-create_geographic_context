@@ -55,25 +55,6 @@ const MAP_RELATIONS = Object.freeze(new Map([
   [ROOM_TYPE, geoConstants.ROOM_RELATION],
 ]));
 
-const DEFAULT_LEVELS = Object.freeze([
-  Object.freeze({
-    type: BUILDING_TYPE,
-    key: BUILDING_TYPE
-  }),
-  Object.freeze({
-    type: FLOOR_TYPE,
-    key: FLOOR_TYPE
-  }),
-  Object.freeze({
-    type: ZONE_TYPE,
-    key: ZONE_TYPE
-  }),
-  Object.freeze({
-    type: ROOM_TYPE,
-    key: ROOM_TYPE
-  })
-]);
-
 export {
   EQUIPMENT_RELATION,
   BUILDING_TYPE,
@@ -82,6 +63,5 @@ export {
   ROOM_TYPE,
   GEOGRAPHIC_TYPES,
   MAP_TYPES,
-  MAP_RELATIONS,
-  DEFAULT_LEVELS
+  MAP_RELATIONS
 };

@@ -83,17 +83,8 @@ export default {
   methods: {
     opened(option) {
       this.context = option.context;
-
       this.activeStep = "ref";
-
       this.levels = [];
-      for (let defaultLevel of this.constants.DEFAULT_LEVELS) {
-        this.levels.push({
-          type: defaultLevel.type,
-          key: defaultLevel.key
-        });
-      }
-
       this.layoutError = null;
       this.showLoad = false;
     },
