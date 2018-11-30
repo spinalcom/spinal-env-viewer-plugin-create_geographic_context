@@ -28,7 +28,6 @@ import {
 } from "spinalgraph";
 import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
 
-import {getAllLeafDbIds} from "./utilitiesDbIds";
 import hasProperties from "./hasProperties";
 import createTmpTree from "./createTmpTree";
 
@@ -49,8 +48,7 @@ async function GenerateGeoContextRec(context, parent, children, layout, depth) {
     }
   } else {
     for (let child of children) {
-      promises.push(bimObjectService.addBIMObject(context, parent, child.dbId,
-        child.name));
+      promises.push(bimObjectService.addBIMObject(context, parent, child.dbId, child.name));
     }
   }
   await Promise.all(promises);
@@ -64,7 +62,8 @@ async function GenerateGeoContextRec(context, parent, children, layout, depth) {
  * @return {SpinalContext} The geographic context
  */
 async function GenerateGeoContext(context, layout, referencial) {
-  referencial = getAllLeafDbIds();
+  console.log("referential: ", referencial);
+
   const promiseResults = await Promise.all([
     hasProperties(referencial, layout.keys), // Get all useful properties
     bimObjectService.getContext() // Create BIMObjectContext if it isn't already done
