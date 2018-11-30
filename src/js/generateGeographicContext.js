@@ -31,20 +31,46 @@ import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
 import hasProperties from "./hasProperties";
 import createTmpTree from "./createTmpTree";
 
+async function getChild(parent, nodeName, relationName) {
+  const children = await parent.getChildren(relationName);
+
+  for (let child of children) {
+    if (child.getName().get() === nodeName) {
+      return child;
+    }
+  }
+
+  return null;
+}
+
 async function GenerateGeoContextRec(context, parent, children, layout, depth) {
   let promises = [];
 
   if (children instanceof Map) {
-    for (let [name, value] of children) {
-      promises.push(
-        parent.addChildInContext(
-          new SpinalNode(name, layout.types[depth]),
-          layout.relations[depth],
-          SPINAL_RELATION_TYPE,
-          context
-        ).then(node =>
-          GenerateGeoContextRec(context, node, value, layout, depth + 1)
-        ));
+    for (let [name, ] of children) {
+      promises.push(getChild(parent, name, layout.relations[depth]));
+    }
+
+    const parentChildren = await Promise.all(promises);
+    const entries = children.entries();
+    promises = [];
+
+    for (let child of parentChildren) {
+      let [name, value] = entries.next().value;
+
+      if (child === null) {
+        child = new SpinalNode(name, layout.types[depth]);
+
+        promises.push(
+          parent.addChildInContext(
+            child,
+            layout.relations[depth],
+            SPINAL_RELATION_TYPE,
+            context
+          )
+        );
+      }
+      promises.push(GenerateGeoContextRec(context, child, value, layout, depth + 1));
     }
   } else {
     for (let child of children) {
@@ -62,8 +88,6 @@ async function GenerateGeoContextRec(context, parent, children, layout, depth) {
  * @return {SpinalContext} The geographic context
  */
 async function GenerateGeoContext(context, layout, referencial) {
-  console.log("referential: ", referencial);
-
   const promiseResults = await Promise.all([
     hasProperties(referencial, layout.keys), // Get all useful properties
     bimObjectService.getContext() // Create BIMObjectContext if it isn't already done
