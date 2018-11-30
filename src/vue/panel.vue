@@ -57,6 +57,8 @@ with this file. If not, see
 </template>
 
 <script>
+import { findInContext } from "spinalgraph/build/GraphFunctionsLib/GraphTraversal";
+
 import referencialSelection from "./referencialSelection.vue";
 import levelList from "./levelList.vue";
 import generateGeoContext from "../js/generateGeographicContext";
@@ -121,7 +123,21 @@ export default {
 
       this.showLoad = true;
       await generateGeoContext(this.context, layout, this.referencial);
-      this.showLoad = false;
+
+      let childrenToSynchronize = await findInContext(
+        this.context,
+        this.context
+      );
+
+      let inter = setInterval(() => {
+        childrenToSynchronize = childrenToSynchronize.filter(node => {
+          return FileSystem._objects[node._server_id] === undefined;
+        });
+        if (childrenToSynchronize.length === 0) {
+          clearInterval(inter);
+          this.showLoad = false;
+        }
+      }, 1000);
     }
   },
   created() {
