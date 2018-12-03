@@ -58,8 +58,7 @@ export default {
     this.viewer;
     this.allDbIds;
     return {
-      useAllDbIds: true,
-      allDbIds: []
+      useAllDbIds: true
     };
   },
   watch: {
@@ -76,7 +75,7 @@ export default {
       const model = this.viewer.model;
       const tree = model.getData().instanceTree;
       const selection = this.viewer.getSelection();
-      let queue = [...selection];
+      const queue = [...selection];
 
       while (queue.length) {
         let id = queue.shift();
@@ -84,6 +83,7 @@ export default {
         if (!this.referencial.includes(id)) {
           this.referencial.push(id);
         }
+
         tree.enumNodeChildren(id, childId => {
           queue.push(childId);
         });

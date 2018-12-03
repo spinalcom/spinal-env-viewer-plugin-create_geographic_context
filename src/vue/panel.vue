@@ -57,11 +57,9 @@ with this file. If not, see
 </template>
 
 <script>
-import { findInContext } from "spinalgraph/build/GraphFunctionsLib/GraphTraversal";
-
 import referencialSelection from "./referencialSelection.vue";
 import levelList from "./levelList.vue";
-import generateGeoContext from "../js/generateGeographicContext";
+import generateGeoContext from "../js_build/generateGeographicContext";
 
 export default {
   name: "dialogCreateGeographicContext",
@@ -98,10 +96,12 @@ export default {
           this.layoutError = "Incomplete layout";
           return null;
         }
+
         layout.types.push(this.constants.MAP_TYPES.get(level.type));
         layout.keys.push(level.key);
         layout.relations.push(this.constants.MAP_RELATIONS.get(level.type));
       }
+
       layout.relations.push(this.constants.EQUIPMENT_RELATION);
       return layout;
     },
@@ -114,25 +114,11 @@ export default {
 
       this.showLoad = true;
       await generateGeoContext(this.context, layout, this.referencial);
-
-      let childrenToSynchronize = await findInContext(
-        this.context,
-        this.context
-      );
-
-      let inter = setInterval(() => {
-        childrenToSynchronize = childrenToSynchronize.filter(node => {
-          return FileSystem._objects[node._server_id] === undefined;
-        });
-        if (childrenToSynchronize.length === 0) {
-          clearInterval(inter);
-          this.showLoad = false;
-        }
-      }, 1000);
+      this.showLoad = false;
     }
   },
   created() {
-    this.constants = require("../js/constants");
+    this.constants = require("../js_build/constants");
   }
 };
 </script>

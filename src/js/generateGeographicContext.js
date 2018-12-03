@@ -31,6 +31,8 @@ import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
 import hasProperties from "./hasProperties";
 import createTmpTree from "./createTmpTree";
 
+const MAX_NON_SYNCHRONIZED_NODES = 300;
+
 async function getChild(parent, nodeName, relationName) {
   const children = await parent.getChildren(relationName);
 
@@ -43,17 +45,16 @@ async function getChild(parent, nodeName, relationName) {
   return null;
 }
 
-async function GenerateGeoContextRec(context, parent, children, layout, depth) {
-  let promises = [];
-
+async function* GenerateGeoContextRec(context, parent, children, layout, depth) {
   if (children instanceof Map) {
+    const promises = [];
+
     for (let [name, ] of children) {
       promises.push(getChild(parent, name, layout.relations[depth]));
     }
 
     const parentChildren = await Promise.all(promises);
     const entries = children.entries();
-    promises = [];
 
     for (let child of parentChildren) {
       let [name, value] = entries.next().value;
@@ -61,23 +62,38 @@ async function GenerateGeoContextRec(context, parent, children, layout, depth) {
       if (child === null) {
         child = new SpinalNode(name, layout.types[depth]);
 
-        promises.push(
-          parent.addChildInContext(
-            child,
-            layout.relations[depth],
-            SPINAL_RELATION_TYPE,
-            context
-          )
+        yield parent.addChildInContext(
+          child,
+          layout.relations[depth],
+          SPINAL_RELATION_TYPE,
+          context
         );
       }
-      promises.push(GenerateGeoContextRec(context, child, value, layout, depth + 1));
+
+      yield* GenerateGeoContextRec(context, child, value, layout, depth + 1);
     }
   } else {
     for (let child of children) {
-      promises.push(bimObjectService.addBIMObject(context, parent, child.dbId, child.name));
+      yield bimObjectService.addBIMObject(context, parent, child.dbId, child.name);
     }
   }
-  await Promise.all(promises);
+}
+
+async function waitForFileSystem(promises) {
+  let nodes = await Promise.all(promises);
+
+  return new Promise(resolve => {
+    let inter = setInterval(() => {
+      nodes = nodes.filter(node => {
+        return FileSystem._objects[node._server_id] === undefined;
+      });
+
+      if (nodes.length === 0) {
+        clearInterval(inter);
+        resolve();
+      }
+    }, 1000);
+  });
 }
 
 /**
@@ -92,7 +108,6 @@ async function GenerateGeoContext(context, layout, referencial) {
     hasProperties(referencial, layout.keys), // Get all useful properties
     bimObjectService.getContext() // Create BIMObjectContext if it isn't already done
   ]);
-
   const props = promiseResults[0].valid;
 
   if (props.length === 0) {
@@ -100,8 +115,20 @@ async function GenerateGeoContext(context, layout, referencial) {
   }
 
   const tmpTree = createTmpTree(props);
+  let promises = [];
 
-  await GenerateGeoContextRec(context, context, tmpTree, layout, 0);
+  for await (let promise of GenerateGeoContextRec(context, context, tmpTree, layout, 0)) {
+    promises.push(promise);
+
+    if (promises.length === MAX_NON_SYNCHRONIZED_NODES) {
+      // eslint-disable-next-line no-await-in-loop
+      await waitForFileSystem(promises);
+    }
+  }
+
+  if (promises.length !== 0) {
+    await waitForFileSystem(promises);
+  }
 }
 
 export default GenerateGeoContext;
