@@ -35,8 +35,8 @@ with this file. If not, see
       <md-step v-if="configGen !== null"
                class="step"
                id="ref"
-               md-label="Choose referencial">
-        <referencial-selection :config="config" />
+               md-label="Choose referential">
+        <referential-selection :config="config" />
       </md-step>
 
       <md-step class="step"
@@ -66,7 +66,7 @@ with this file. If not, see
 </template>
 
 <script>
-import referencialSelection from "./referencialSelection.vue";
+import referentialSelection from "./referentialSelection.vue";
 import levelList from "./levelList.vue";
 
 import { getAllLeafDbIds } from "../js/utilitiesDbIds";
@@ -74,14 +74,14 @@ import generateGeoContext from "../js_build/generateGeographicContext";
 
 const DEFAULT_CONFIG = {
   useAllDbIds: true,
-  referencial: [],
+  referential: [],
   levels: []
 };
 
 export default {
   name: "dialogCreateGeographicContext",
   components: {
-    referencialSelection,
+    referentialSelection,
     levelList
   },
   data() {
@@ -107,9 +107,9 @@ export default {
 
         convertedConfig.useAllDbIds = modelConfig.useAllDbIds.get();
 
-        convertedConfig.referencial = [];
-        for (let i = 0; i < modelConfig.referencial.length; i++) {
-          convertedConfig.referencial.push(modelConfig.referencial[i].get());
+        convertedConfig.referential = [];
+        for (let i = 0; i < modelConfig.referential.length; i++) {
+          convertedConfig.referential.push(modelConfig.referential[i].get());
         }
 
         convertedConfig.levels = [];
@@ -166,14 +166,14 @@ export default {
       }
 
       if (this.config.useAllDbIds) {
-        this.config.referencial = getAllLeafDbIds();
+        this.config.referential = getAllLeafDbIds();
       }
 
       this.showLoad = true;
       await generateGeoContext(
         this.context,
         layout,
-        this.config.referencial,
+        this.config.referential,
         this.progression
       );
       this.showLoad = false;

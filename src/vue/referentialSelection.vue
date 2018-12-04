@@ -34,11 +34,11 @@ with this file. If not, see
         <md-icon>add</md-icon>
       </md-button>
 
-      <md-button @click="clearReferencial">
+      <md-button @click="clearreferential">
         <md-icon>clear</md-icon>
       </md-button>
 
-      <p>{{config.referencial.length}} objects selected</p>
+      <p>{{config.referential.length}} objects selected</p>
     </div>
   </div>
 </template>
@@ -59,7 +59,7 @@ export default {
   watch: {
     ["config.useAllDbIds"](newValue) {
       if (!newValue) {
-        this.clearReferencial();
+        this.clearreferential();
       }
     }
   },
@@ -73,8 +73,8 @@ export default {
       while (queue.length) {
         let id = queue.shift();
 
-        if (!this.config.referencial.includes(id)) {
-          this.config.referencial.push(id);
+        if (!this.config.referential.includes(id)) {
+          this.config.referential.push(id);
         }
 
         tree.enumNodeChildren(id, childId => {
@@ -82,8 +82,8 @@ export default {
         });
       }
     },
-    clearReferencial() {
-      this.config.referencial = [];
+    clearreferential() {
+      this.config.referential = [];
     }
   },
   created() {

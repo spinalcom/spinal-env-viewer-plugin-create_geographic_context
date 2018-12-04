@@ -103,13 +103,13 @@ async function waitForFileSystem(promises) {
  * Generates a geographic context using the autodesk forge object tree.
  * @param {SpinalContext} context Context to fill
  * @param {Object} layout Object containing the types, keys and relation names necessary to generate the context
- * @param {Array<Number>} referencial DbIds to use
+ * @param {Array<Number>} referential DbIds to use
  * @param {Object<value: Number>} progression Object containing the progression of the generation
  * @return {SpinalContext} The geographic context
  */
-async function generateGeoContext(context, layout, referencial, progression) {
+async function generateGeoContext(context, layout, referential, progression) {
   const promiseResults = await Promise.all([
-    hasProperties(referencial, layout.keys), // Get all useful properties
+    hasProperties(referential, layout.keys), // Get all useful properties
     bimObjectService.getContext() // Create BIMObjectContext if it isn't already done
   ]);
   const props = promiseResults[0].valid;
