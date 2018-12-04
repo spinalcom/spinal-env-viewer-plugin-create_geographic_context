@@ -30,10 +30,8 @@ with this file. If not, see
     </h3>
 
     <md-steppers id="panel-generate-geographic-context"
-                 :md-active-step.sync="activeStep"
-                 @md-changed="(id) => {if (id === 'layout') layoutError = null}">
-      <md-step v-if="configGen !== null"
-               class="step"
+                 :md-active-step.sync="activeStep">
+      <md-step class="step"
                id="ref"
                md-label="Choose referential">
         <referential-selection :config="config" />
@@ -43,23 +41,17 @@ with this file. If not, see
                id="layout"
                md-label="Create layout"
                :md-error="layoutError">
-        <level-list :constants="constants"
-                    :levels="config.levels"
+        <level-list :levels="config.levels"
                     :show-warnings="layoutError !== null" />
       </md-step>
 
       <md-step class="step"
                id="launch"
                md-label="Launch the generation">
-        <div id="launch-step">
-          <md-button v-if="!showLoad"
-                     class="md-raised md-primary"
-                     @click="generateContext">Start</md-button>
-
-          <md-progress-bar v-else
-                           id="progress-bar"
-                           :md-value="progression.value" />
-        </div>
+        <launch-step :update="update"
+                     :context="context"
+                     :config="config"
+                     @layoutError="e => layoutError = e" />
       </md-step>
     </md-steppers>
   </div>
@@ -68,93 +60,58 @@ with this file. If not, see
 <script>
 import referentialSelection from "./referentialSelection.vue";
 import levelList from "./levelList.vue";
+import launchStep from "./launchStep.vue";
 
-import * as constants from "../js_build/constants";
-import { getDefaultConfig, loadConfig, saveConfig } from "../js/panelConfig";
-import { getAllLeafDbIds } from "../js/utilitiesDbIds";
-import generateGeoContext from "../js_build/generateGeographicContext";
+import {
+ getDefaultConfig, loadConfig, saveConfig 
+} from "../js/panelConfig";
 
 export default {
   name: "dialogCreateGeographicContext",
   components: {
     referentialSelection,
-    levelList
+    levelList,
+    launchStep
   },
   data() {
     return {
       showDialog: true,
+      update: "",
       context: null,
       config: getDefaultConfig(),
       activeStep: "",
-      layoutError: null,
-      showLoad: false,
-      progression: null
+      layoutError: null
     };
   },
   watch: {
     async context(newValue, oldValue) {
+      this.update = "changeContext";
+
       if (oldValue) {
         await saveConfig(oldValue, this.config);
       }
 
       this.config = await loadConfig(this.context);
+    },
+    layoutError(newValue, oldValue) {
+      if (oldValue === "layout") {
+        this.layoutError = null;
+      }
     }
   },
   methods: {
     opened(option) {
+      this.update = "opened";
       this.context = option.context;
 
       this.activeStep = "ref";
-      this.levels = [];
       this.layoutError = null;
-      this.showLoad = false;
-      this.progression = { value: 0 };
     },
     removed() {},
     closed() {
+      this.update = "closed";
       saveConfig(this.context, this.config);
-    },
-    getLayout() {
-      let layout = { types: [], keys: [], relations: [] };
-
-      for (let level of this.config.levels) {
-        if (level.key === "" || level.type === "") {
-          this.layoutError = "Incomplete layout";
-          return null;
-        }
-
-        layout.types.push(constants.MAP_TYPES.get(level.type));
-        layout.keys.push(level.key);
-        layout.relations.push(constants.MAP_RELATIONS.get(level.type));
-      }
-
-      layout.relations.push(constants.EQUIPMENT_RELATION);
-      return layout;
-    },
-    async generateContext() {
-      const layout = this.getLayout();
-
-      if (layout === null) {
-        return;
-      }
-
-      if (this.config.useAllDbIds) {
-        this.config.referential = getAllLeafDbIds();
-      }
-
-      this.showLoad = true;
-      await generateGeoContext(
-        this.context,
-        layout,
-        this.config.referential,
-        this.progression
-      );
-      this.showLoad = false;
-      this.progression.value = 0;
     }
-  },
-  created() {
-    this.constants = constants;
   }
 };
 </script>
@@ -177,13 +134,5 @@ export default {
 #panel-generate-geographic-context {
   min-width: 600px;
   width: 60vw;
-}
-
-#launch-step {
-  text-align: center;
-}
-
-#progress-bar {
-  height: 20px;
 }
 </style>
