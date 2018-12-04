@@ -123,6 +123,7 @@ async function GenerateGeoContext(context, layout, referencial) {
     if (promises.length === MAX_NON_SYNCHRONIZED_NODES) {
       // eslint-disable-next-line no-await-in-loop
       await waitForFileSystem(promises);
+      promises = [];
     }
   }
 
