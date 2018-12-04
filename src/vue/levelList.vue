@@ -39,15 +39,13 @@ with this file. If not, see
 </template>
 
 <script>
+import * as constants from "../js_build/constants";
+
 import level from "./level.vue";
 
 export default {
   name: "levelList",
   props: {
-    constants: {
-      type: Object,
-      required: true
-    },
     levels: {
       type: Array,
       required: true
@@ -59,6 +57,10 @@ export default {
   },
   components: {
     level
+  },
+  data() {
+    this.constants;
+    return {};
   },
   methods: {
     addLevel() {
@@ -74,15 +76,14 @@ export default {
         i--;
       } while (
         i >= 0 &&
-        !this.constants.GEOGRAPHIC_TYPES.includes(this.levels[i].type)
+        !constants.GEOGRAPHIC_TYPES.includes(this.levels[i].type)
       );
 
       if (i < 0) {
         return 0;
       } else {
         const minType = this.levels[i].type;
-        const minTypeIndex =
-          this.constants.GEOGRAPHIC_TYPES.indexOf(minType) + 1;
+        const minTypeIndex = constants.GEOGRAPHIC_TYPES.indexOf(minType) + 1;
 
         return minTypeIndex;
       }
@@ -94,14 +95,14 @@ export default {
         i++;
       } while (
         i < this.levels.length &&
-        !this.constants.GEOGRAPHIC_TYPES.includes(this.levels[i].type)
+        !constants.GEOGRAPHIC_TYPES.includes(this.levels[i].type)
       );
 
       if (i === this.levels.length) {
-        return this.constants.GEOGRAPHIC_TYPES.length;
+        return constants.GEOGRAPHIC_TYPES.length;
       } else {
         const maxType = this.levels[i].type;
-        const maxTypeIndex = this.constants.GEOGRAPHIC_TYPES.indexOf(maxType);
+        const maxTypeIndex = constants.GEOGRAPHIC_TYPES.indexOf(maxType);
 
         return maxTypeIndex;
       }
@@ -112,10 +113,13 @@ export default {
       const available = [];
 
       for (let i = minTypeIndex; i < maxTypeIndex; i++) {
-        available.push(this.constants.GEOGRAPHIC_TYPES[i]);
+        available.push(constants.GEOGRAPHIC_TYPES[i]);
       }
-      return available.concat(this.constants.ZONE_TYPE);
+      return available.concat(constants.ZONE_TYPE);
     }
+  },
+  created() {
+    this.constants = constants;
   }
 };
 </script>
