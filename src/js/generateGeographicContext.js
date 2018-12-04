@@ -45,7 +45,7 @@ async function getChild(parent, nodeName, relationName) {
   return null;
 }
 
-async function* GenerateGeoContextRec(context, parent, children, layout, depth) {
+async function* generateGeoContextRec(context, parent, children, layout, depth) {
   if (children instanceof Map) {
     const promises = [];
 
@@ -70,7 +70,7 @@ async function* GenerateGeoContextRec(context, parent, children, layout, depth) 
         );
       }
 
-      yield* GenerateGeoContextRec(context, child, value, layout, depth + 1);
+      yield* generateGeoContextRec(context, child, value, layout, depth + 1);
     }
   } else {
     for (let child of children) {
@@ -92,7 +92,7 @@ async function waitForFileSystem(promises) {
         clearInterval(inter);
         resolve();
       }
-    }, 1000);
+    }, 500);
   });
 }
 
@@ -103,7 +103,7 @@ async function waitForFileSystem(promises) {
  * @param {Array<Number>} referencial DbIds to use
  * @return {SpinalContext} The geographic context
  */
-async function GenerateGeoContext(context, layout, referencial) {
+async function generateGeoContext(context, layout, referencial) {
   const promiseResults = await Promise.all([
     hasProperties(referencial, layout.keys), // Get all useful properties
     bimObjectService.getContext() // Create BIMObjectContext if it isn't already done
@@ -117,7 +117,7 @@ async function GenerateGeoContext(context, layout, referencial) {
   const tmpTree = createTmpTree(props);
   let promises = [];
 
-  for await (let promise of GenerateGeoContextRec(context, context, tmpTree, layout, 0)) {
+  for await (let promise of generateGeoContextRec(context, context, tmpTree, layout, 0)) {
     promises.push(promise);
 
     if (promises.length === MAX_NON_SYNCHRONIZED_NODES) {
@@ -132,4 +132,4 @@ async function GenerateGeoContext(context, layout, referencial) {
   }
 }
 
-export default GenerateGeoContext;
+export default generateGeoContext;
