@@ -23,37 +23,44 @@ with this file. If not, see
 -->
 
 <template>
-  <md-steppers id="panel-generate-geographic-context"
-               :md-active-step.sync="activeStep"
-               @md-changed="(id) => {if (id === 'layout') layoutError = null}">
-    <md-step class="step"
-             id="ref"
-             md-label="Choose referential">
-      <referencial-selection :referencial="referencial" />
-    </md-step>
+  <div>
+    <h3 v-if="context !== null"
+        id="context-name">
+      {{this.context.getName().get()}}
+    </h3>
 
-    <md-step class="step"
-             id="layout"
-             md-label="Create layout"
-             :md-error="layoutError">
-      <level-list :constants="constants"
-                  :levels="levels"
-                  :show-warnings="layoutError !== null" />
-    </md-step>
+    <md-steppers id="panel-generate-geographic-context"
+                 :md-active-step.sync="activeStep"
+                 @md-changed="(id) => {if (id === 'layout') layoutError = null}">
+      <md-step class="step"
+               id="ref"
+               md-label="Choose referential">
+        <referencial-selection :referencial="referencial" />
+      </md-step>
 
-    <md-step class="step"
-             id="launch"
-             md-label="Launch the generation">
-      <div id="launch-step">
-        <md-button v-if="!showLoad"
-                   class="md-raised md-primary"
-                   @click="generateContext">Start</md-button>
+      <md-step class="step"
+               id="layout"
+               md-label="Create layout"
+               :md-error="layoutError">
+        <level-list :constants="constants"
+                    :levels="levels"
+                    :show-warnings="layoutError !== null" />
+      </md-step>
 
-        <md-progress-spinner v-else
-                             md-mode="indeterminate" />
-      </div>
-    </md-step>
-  </md-steppers>
+      <md-step class="step"
+               id="launch"
+               md-label="Launch the generation">
+        <div id="launch-step">
+          <md-button v-if="!showLoad"
+                     class="md-raised md-primary"
+                     @click="generateContext">Start</md-button>
+
+          <md-progress-spinner v-else
+                               md-mode="indeterminate" />
+        </div>
+      </md-step>
+    </md-steppers>
+  </div>
 </template>
 
 <script>
@@ -130,6 +137,10 @@ export default {
 </style>
 
 <style scoped>
+#context-name {
+  text-align: center;
+}
+
 .step {
   box-sizing: border-box;
 }
