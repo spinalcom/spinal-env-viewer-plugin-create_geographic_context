@@ -45,14 +45,14 @@ const MAP_TYPES = Object.freeze(new Map([
   [BUILDING_TYPE, geoConstants.BUILDING_TYPE],
   [FLOOR_TYPE, geoConstants.FLOOR_TYPE],
   [ZONE_TYPE, geoConstants.ZONE_TYPE],
-  [ROOM_TYPE, geoConstants.ROOM_TYPE],
+  [ROOM_TYPE, geoConstants.ROOM_TYPE]
 ]));
 
 const MAP_RELATIONS = Object.freeze(new Map([
   [BUILDING_TYPE, geoConstants.BUILDING_RELATION],
   [FLOOR_TYPE, geoConstants.FLOOR_RELATION],
   [ZONE_TYPE, geoConstants.ZONE_RELATION],
-  [ROOM_TYPE, geoConstants.ROOM_RELATION],
+  [ROOM_TYPE, geoConstants.ROOM_RELATION]
 ]));
 
 export {

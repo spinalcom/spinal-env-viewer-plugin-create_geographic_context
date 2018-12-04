@@ -69,14 +69,10 @@ with this file. If not, see
 import referentialSelection from "./referentialSelection.vue";
 import levelList from "./levelList.vue";
 
+import * as constants from "../js_build/constants";
+import { getDefaultConfig, loadConfig, saveConfig } from "../js/panelConfig";
 import { getAllLeafDbIds } from "../js/utilitiesDbIds";
 import generateGeoContext from "../js_build/generateGeographicContext";
-
-const DEFAULT_CONFIG = {
-  useAllDbIds: true,
-  referential: [],
-  levels: []
-};
 
 export default {
   name: "dialogCreateGeographicContext",
@@ -88,48 +84,25 @@ export default {
     return {
       showDialog: true,
       context: null,
-      config: DEFAULT_CONFIG,
+      config: getDefaultConfig(),
       activeStep: "",
       layoutError: null,
       showLoad: false,
       progression: null
     };
   },
-  methods: {
-    async loadConfig() {
-      const contextElem = await this.context.getElement();
-
-      if (typeof contextElem.config === "undefined") {
-        this.config = DEFAULT_CONFIG;
-      } else {
-        const modelConfig = contextElem.config;
-        const convertedConfig = {};
-
-        convertedConfig.useAllDbIds = modelConfig.useAllDbIds.get();
-
-        convertedConfig.referential = [];
-        for (let i = 0; i < modelConfig.referential.length; i++) {
-          convertedConfig.referential.push(modelConfig.referential[i].get());
-        }
-
-        convertedConfig.levels = [];
-        for (let i = 0; i < modelConfig.levels.length; i++) {
-          convertedConfig.levels.push(modelConfig.levels[i].get());
-        }
-        this.config = convertedConfig;
-        console.log("convertedConfig: ", convertedConfig);
+  watch: {
+    async context(newValue, oldValue) {
+      if (oldValue) {
+        await saveConfig(oldValue, this.config);
       }
-    },
-    async saveConfig(config) {
-      const contextElem = await this.context.getElement();
 
-      contextElem.mod_attr("config", config);
-    },
+      this.config = await loadConfig(this.context);
+    }
+  },
+  methods: {
     opened(option) {
       this.context = option.context;
-
-      this.config = DEFAULT_CONFIG;
-      this.loadConfig();
 
       this.activeStep = "ref";
       this.levels = [];
@@ -139,7 +112,7 @@ export default {
     },
     removed() {},
     closed() {
-      this.saveConfig(this.config);
+      saveConfig(this.context, this.config);
     },
     getLayout() {
       let layout = { types: [], keys: [], relations: [] };
@@ -150,12 +123,12 @@ export default {
           return null;
         }
 
-        layout.types.push(this.constants.MAP_TYPES.get(level.type));
+        layout.types.push(constants.MAP_TYPES.get(level.type));
         layout.keys.push(level.key);
-        layout.relations.push(this.constants.MAP_RELATIONS.get(level.type));
+        layout.relations.push(constants.MAP_RELATIONS.get(level.type));
       }
 
-      layout.relations.push(this.constants.EQUIPMENT_RELATION);
+      layout.relations.push(constants.EQUIPMENT_RELATION);
       return layout;
     },
     async generateContext() {
@@ -181,7 +154,7 @@ export default {
     }
   },
   created() {
-    this.constants = require("../js_build/constants");
+    this.constants = constants;
   }
 };
 </script>
