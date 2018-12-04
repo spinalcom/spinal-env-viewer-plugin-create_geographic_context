@@ -47,12 +47,11 @@ const extentionCreated = SpinalForgeExtention.createExtention({
   style: {
     left: "405px"
   },
-  onload: () => {},
-  onUnLoad: () => {}
+  onLoad() {},
+  onUnLoad() {}
 });
 
-SpinalForgeExtention.registerExtention("generate_geographic_context",
-  extentionCreated);
+SpinalForgeExtention.registerExtention("generate_geographic_context", extentionCreated);
 
 class GenerateGeoContext extends SpinalContextApp {
   constructor() {

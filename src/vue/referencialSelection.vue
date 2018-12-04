@@ -24,12 +24,12 @@ with this file. If not, see
 
 <template>
   <div>
-    <md-checkbox v-model="useAllDbIds"
+    <md-checkbox v-model="config.useAllDbIds"
                  class="md-primary">
       Use whole digitital twin
     </md-checkbox>
 
-    <div v-show="!useAllDbIds">
+    <div v-show="!config.useAllDbIds">
       <md-button @click="addSelection">
         <md-icon>add</md-icon>
       </md-button>
@@ -38,35 +38,28 @@ with this file. If not, see
         <md-icon>clear</md-icon>
       </md-button>
 
-      <p>{{referencial.length}} objects selected</p>
+      <p>{{config.referencial.length}} objects selected</p>
     </div>
   </div>
 </template>
 
 <script>
-import { getAllLeafDbIds } from "../js/utilitiesDbIds";
-
 export default {
   name: "referentialSelection",
   props: {
-    referencial: {
-      type: Array,
+    config: {
+      type: Object,
       required: true
     }
   },
   data() {
     this.viewer;
-    this.allDbIds;
-    return {
-      useAllDbIds: true
-    };
+    return {};
   },
   watch: {
-    useAllDbIds() {
-      this.referencial.splice(0, this.referencial.length);
-
-      if (this.useAllDbIds) {
-        this.referencial.push(...this.allDbIds);
+    ["config.useAllDbIds"](newValue) {
+      if (!newValue) {
+        this.clearReferencial();
       }
     }
   },
@@ -80,8 +73,8 @@ export default {
       while (queue.length) {
         let id = queue.shift();
 
-        if (!this.referencial.includes(id)) {
-          this.referencial.push(id);
+        if (!this.config.referencial.includes(id)) {
+          this.config.referencial.push(id);
         }
 
         tree.enumNodeChildren(id, childId => {
@@ -90,13 +83,11 @@ export default {
       }
     },
     clearReferencial() {
-      this.referencial.splice(0, this.referencial.length);
+      this.config.referencial = [];
     }
   },
   created() {
     this.viewer = window.spinal.ForgeViewer.viewer;
-    this.allDbIds = getAllLeafDbIds();
-    this.referencial.push(...this.allDbIds);
   }
 };
 </script>
