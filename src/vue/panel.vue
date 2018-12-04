@@ -55,8 +55,9 @@ with this file. If not, see
                      class="md-raised md-primary"
                      @click="generateContext">Start</md-button>
 
-          <md-progress-spinner v-else
-                               md-mode="indeterminate" />
+          <md-progress-bar v-else
+                           id="progress-bar"
+                           :md-value="progression.value" />
         </div>
       </md-step>
     </md-steppers>
@@ -82,7 +83,8 @@ export default {
       referencial: [],
       levels: [],
       layoutError: null,
-      showLoad: false
+      showLoad: false,
+      progression: null
     };
   },
   methods: {
@@ -92,6 +94,7 @@ export default {
       this.levels = [];
       this.layoutError = null;
       this.showLoad = false;
+      this.progression = { value: 0 };
     },
     removed() {},
     closed() {},
@@ -120,8 +123,14 @@ export default {
       }
 
       this.showLoad = true;
-      await generateGeoContext(this.context, layout, this.referencial);
+      await generateGeoContext(
+        this.context,
+        layout,
+        this.referencial,
+        this.progression
+      );
       this.showLoad = false;
+      this.progression.value = 0;
     }
   },
   created() {
@@ -152,5 +161,9 @@ export default {
 
 #launch-step {
   text-align: center;
+}
+
+#progress-bar {
+  height: 20px;
 }
 </style>

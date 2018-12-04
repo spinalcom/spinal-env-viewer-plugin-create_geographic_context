@@ -31,6 +31,9 @@ import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
 import hasProperties from "./hasProperties";
 import createTmpTree from "./createTmpTree";
 
+const PROGRESS_BAR_SIZE_GET_PROPS = 25;
+const PROGRESS_BAR_SIZE_CREATE_TREE = 25;
+const PROGRESS_BAR_SIZE_CREATE_GRAPH = 50;
 const MAX_NON_SYNCHRONIZED_NODES = 300;
 
 async function getChild(parent, nodeName, relationName) {
@@ -101,9 +104,10 @@ async function waitForFileSystem(promises) {
  * @param {SpinalContext} context Context to fill
  * @param {Object} layout Object containing the types, keys and relation names necessary to generate the context
  * @param {Array<Number>} referencial DbIds to use
+ * @param {Object<value: Number>} progression Object containing the progression of the generation
  * @return {SpinalContext} The geographic context
  */
-async function generateGeoContext(context, layout, referencial) {
+async function generateGeoContext(context, layout, referencial, progression) {
   const promiseResults = await Promise.all([
     hasProperties(referencial, layout.keys), // Get all useful properties
     bimObjectService.getContext() // Create BIMObjectContext if it isn't already done
@@ -114,13 +118,19 @@ async function generateGeoContext(context, layout, referencial) {
     return;
   }
 
+  progression.value = PROGRESS_BAR_SIZE_GET_PROPS;
+
   const tmpTree = createTmpTree(props);
+  const incrProg = PROGRESS_BAR_SIZE_CREATE_GRAPH * MAX_NON_SYNCHRONIZED_NODES / props.length;
   let promises = [];
+
+  progression.value += PROGRESS_BAR_SIZE_CREATE_TREE;
 
   for await (let promise of generateGeoContextRec(context, context, tmpTree, layout, 0)) {
     promises.push(promise);
 
     if (promises.length === MAX_NON_SYNCHRONIZED_NODES) {
+      progression.value += incrProg;
       // eslint-disable-next-line no-await-in-loop
       await waitForFileSystem(promises);
       promises = [];
@@ -130,6 +140,7 @@ async function generateGeoContext(context, layout, referencial) {
   if (promises.length !== 0) {
     await waitForFileSystem(promises);
   }
+  progression.value = 100;
 }
 
 export default generateGeoContext;
