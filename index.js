@@ -22,65 +22,15 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import Vue from "vue";
-
-import {SpinalContext} from "spinalgraph";
-
 import {
-  spinalContextMenuService,
-  SpinalContextApp
+  spinalContextMenuService
 } from "spinal-env-viewer-context-menu-service";
-import {spinalPanelManagerService} from "spinal-env-viewer-panel-manager-service";
-import {SpinalForgeExtention} from "spinal-env-viewer-panel-manager-service_spinalforgeextention";
-import GeographicContextService from "spinal-env-viewer-context-geographic-service";
+import {
+  SpinalForgeExtention
+} from "spinal-env-viewer-panel-manager-service_spinalforgeextention";
 
-import panel from "./src/vue/panel.vue";
+import extention from "./src/extention";
+import GenerateGeoContextApp from "./src/app";
 
-const extentionCreated = SpinalForgeExtention.createExtention({
-  name: "generate_geographic_context",
-  vueMountComponent: Vue.extend(panel),
-  panel: {
-    title: "Generate a Geographic Context",
-    classname: "gen-geo-context",
-    closeBehaviour: "hide"
-  },
-  style: {
-    left: "405px"
-  },
-  onLoad() {},
-  onUnLoad() {}
-});
-
-SpinalForgeExtention.registerExtention("generate_geographic_context", extentionCreated);
-
-class GenerateGeoContext extends SpinalContextApp {
-  constructor() {
-    super("Generate a geographic context", "Generates a geographic context", {
-      icon: "build",
-      icon_type: "in",
-      backgroundColor: "rgba(0, 0, 0, 0)",
-      fontColor: "#FFFFFF"
-    });
-  }
-
-  isShown(option) {
-    const context = option.selectedNode;
-
-    if (context instanceof SpinalContext &&
-      context.getType().get() === GeographicContextService.constants.CONTEXT_TYPE
-    ) {
-      return Promise.resolve(true);
-    }
-
-    return Promise.resolve(-1);
-  }
-
-  action(option) {
-    spinalPanelManagerService.openPanel("generate_geographic_context", option);
-  }
-}
-
-spinalContextMenuService.registerApp(
-  "GraphManagerSideBar",
-  new GenerateGeoContext()
-);
+SpinalForgeExtention.registerExtention("generate_geographic_context", extention);
+spinalContextMenuService.registerApp("GraphManagerSideBar", new GenerateGeoContextApp());
