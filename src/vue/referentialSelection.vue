@@ -34,7 +34,7 @@ with this file. If not, see
         <md-icon>add</md-icon>
       </md-button>
 
-      <md-button @click="clearreferential">
+      <md-button @click="clearReferential">
         <md-icon>clear</md-icon>
       </md-button>
 
@@ -59,7 +59,7 @@ export default {
   watch: {
     ["config.useAllDbIds"](newValue) {
       if (!newValue) {
-        this.clearreferential();
+        this.clearReferential();
       }
     }
   },
@@ -82,7 +82,7 @@ export default {
         });
       }
     },
-    clearreferential() {
+    clearReferential() {
       this.config.referential = [];
     }
   },

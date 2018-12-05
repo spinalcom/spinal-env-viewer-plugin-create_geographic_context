@@ -22,6 +22,11 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
+import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
+import {
+  serviceDocumentation
+} from "spinal-env-viewer-plugin-documentation-service";
+
 function promiseGetPorperties(model, dbId) {
   return new Promise(resolve => {
     model.getProperties(dbId, resolve);
@@ -63,10 +68,55 @@ function createSimplifiedProperty(prop, keys) {
   return simpleProp;
 }
 
+async function addBIMObjectProps(props) {
+  let BIMObjects = [];
+
+  for (let prop of props) {
+    BIMObjects.push(
+      bimObjectService.getBIMObject(prop.dbId)
+    );
+  }
+
+  BIMObjects = await Promise.all(BIMObjects);
+
+  let i = 0;
+  while (i < BIMObjects.length) {
+    if (typeof BIMObjects[i] === "undefined") {
+      BIMObjects.splice(i, 1);
+      props.splice(i, 1);
+    } else {
+      i++;
+    }
+  }
+
+  let attributes = [];
+
+  for (let i = 0; i < BIMObjects.length; i++) {
+    attributes.push(serviceDocumentation.getAttributes(BIMObjects[i]));
+  }
+
+  attributes = await Promise.all(attributes);
+
+  for (let i = 0; i < attributes.length; i++) {
+    let prop = props[i];
+
+    for (let attr of attributes[i]) {
+      let convert = {
+        displayName: attr.label.get(),
+        displayValue: attr.value.get()
+      };
+
+      prop.properties.push(convert);
+    }
+  }
+}
+
 async function hasProperties(dbIds, keys) {
   const props = await getProperties(dbIds);
   const valid = [];
   const invalid = [];
+
+  await addBIMObjectProps(props);
 
   for (let i = 0; i < props.length; i++) {
     let simplified = createSimplifiedProperty(props[i], keys);
