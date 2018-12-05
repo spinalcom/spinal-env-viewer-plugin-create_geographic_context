@@ -37,22 +37,23 @@ const PROGRESS_BAR_SIZE_CREATE_GRAPH = 80;
 const MAX_NON_SYNCHRONIZED_NODES = 300;
 
 /**
- * Finds and returns the child of the parent with nodeName, or null if it doesn't find it.
+ * Finds the children in the node with the given names.
  * @param {SpinalNode} parent Parent node from which to get the child
- * @param {String} nodeName Name of the node to search for
+ * @param {Iterator<String>} nodeNames Iterator over the names of the nodes
  * @param {String} relationName Relation in which to search
- * @return {SpinalNode | null} The first child with nodeName or null if it wasn't found
+ * @return {Array<SpinalNode | null} An array of the children that were found and of undefined
  */
-async function getChild(parent, nodeName, relationName) {
+async function getChildrenByNames(parent, nodeNames, relationName) {
   const children = await parent.getChildren(relationName);
+  const found = [];
 
-  for (let child of children) {
-    if (child.getName().get() === nodeName) {
-      return child;
-    }
+  for (let name of nodeNames) {
+    found.push(children.find(child => {
+      return child.getName().get() === name
+    }));
   }
 
-  return null;
+  return found;
 }
 
 /**
@@ -67,19 +68,13 @@ async function getChild(parent, nodeName, relationName) {
  */
 async function* generateGeoContextRec(context, parent, children, layout, depth) {
   if (children instanceof Map) {
-    const promises = [];
-
-    for (let [name, ] of children) {
-      promises.push(getChild(parent, name, layout.relations[depth]));
-    }
-
-    const parentChildren = await Promise.all(promises);
+    const foundChildren = await getChildrenByNames(parent, children.keys(), layout.relations[depth]);
     const entries = children.entries();
 
-    for (let child of parentChildren) {
+    for (let child of foundChildren) {
       let [name, value] = entries.next().value;
 
-      if (child === null) {
+      if (typeof child === "undefined") {
         child = new SpinalNode(name, layout.types[depth]);
 
         yield parent.addChildInContext(
