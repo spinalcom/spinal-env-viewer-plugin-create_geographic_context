@@ -18,6 +18,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "spinalgraph": "https://github.com/spinalcom/spinal-model-graph.git#v01",
     "spinal-env-viewer-context-geographic-service": "https://github.com/spinalcom/spinal-env-viewer-context-geographic-service.git",
     "spinal-env-viewer-context-menu-service": "https://github.com/spinalcom/spinal-env-viewer-context-menu-service.git",
     "spinal-env-viewer-panel-manager-service": "https://github.com/spinalcom/spinal-env-viewer-panel-manager-service.git",
