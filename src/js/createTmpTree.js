@@ -28,6 +28,7 @@ function getCoordinates(prop) {
   for (let property of prop.properties) {
     coordinates.push(property.value);
   }
+
   return coordinates;
 }
 
@@ -35,9 +36,11 @@ function sortTree(tree) {
   if (tree instanceof Array) {
     return tree.sort();
   }
+
   for (let [key, value] of tree) {
     tree[key] = sortTree(value);
   }
+
   return new Map([...tree.entries()].sort());
 }
 
@@ -55,16 +58,20 @@ function createTmpTree(props) {
       if (!node.has(coord)) {
         node.set(coord, new Map());
       }
+
       node = node.get(coord);
     }
+
     coord = coordinates[coordinates.length - 1];
 
     if (!node.has(coord)) {
       node.set(coord, new Array());
     }
+
     node = node.get(coord);
     node.push(prop);
   }
+
   return sortTree(root);
 }
 

@@ -63,6 +63,7 @@ async function getChild(parent, nodeName, relationName) {
  * @param {*} children Children to add to the parent
  * @param {*} layout Object containing the types of the nodes and names of the relations
  * @param {*} depth Depth of the recursion; determines what node type and relation name to use
+ * @yields {Promise<SpinalNode>} A promise of the last node that was added to the graph
  */
 async function* generateGeoContextRec(context, parent, children, layout, depth) {
   if (children instanceof Map) {
