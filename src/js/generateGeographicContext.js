@@ -36,6 +36,13 @@ const PROGRESS_BAR_SIZE_CREATE_TREE = 10;
 const PROGRESS_BAR_SIZE_CREATE_GRAPH = 80;
 const MAX_NON_SYNCHRONIZED_NODES = 300;
 
+/**
+ * Finds and returns the child of the parent with nodeName, or null if it doesn't find it.
+ * @param {SpinalNode} parent Parent node from which to get the child
+ * @param {String} nodeName Name of the node to search for
+ * @param {String} relationName Relation in which to search
+ * @return {SpinalNode | null} The first child with nodeName or null if it wasn't found
+ */
 async function getChild(parent, nodeName, relationName) {
   const children = await parent.getChildren(relationName);
 
@@ -48,6 +55,15 @@ async function getChild(parent, nodeName, relationName) {
   return null;
 }
 
+/**
+ * Recursively builds the geographic context from the given layout and
+ * the temporary tree made of maps (nodes) and arrays (leafs), yielding every it adds a node.
+ * @param {SpinalContext} context Context to which the nodes must belong
+ * @param {SpinalNode} parent Parent to which the children must be added
+ * @param {*} children Children to add to the parent
+ * @param {*} layout Object containing the types of the nodes and names of the relations
+ * @param {*} depth Depth of the recursion; determines what node type and relation name to use
+ */
 async function* generateGeoContextRec(context, parent, children, layout, depth) {
   if (children instanceof Map) {
     const promises = [];
@@ -82,6 +98,10 @@ async function* generateGeoContextRec(context, parent, children, layout, depth) 
   }
 }
 
+/**
+ * Waits for the nodes to be in the FileSystem.
+ * @param {Array<Promise>} promises Array of promises containing the nodes
+ */
 async function waitForFileSystem(promises) {
   let nodes = await Promise.all(promises);
 
