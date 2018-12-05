@@ -48,10 +48,10 @@ with this file. If not, see
       <md-step class="step"
                id="launch"
                md-label="Launch the generation">
-        <launch-step :update="update"
-                     :context="context"
-                     :config="config"
-                     @layoutError="e => layoutError = e" />
+        <launch :update="update"
+                :context="context"
+                :config="config"
+                @layoutError="e => layoutError = e" />
       </md-step>
     </md-steppers>
   </div>
@@ -60,18 +60,16 @@ with this file. If not, see
 <script>
 import referentialSelection from "./referentialSelection.vue";
 import levelList from "./levelList.vue";
-import launchStep from "./launchStep.vue";
+import launch from "./launch.vue";
 
-import {
- getDefaultConfig, loadConfig, saveConfig 
-} from "../js/panelConfig";
+import { getDefaultConfig, loadConfig, saveConfig } from "../js/panelConfig";
 
 export default {
   name: "dialogCreateGeographicContext",
   components: {
     referentialSelection,
     levelList,
-    launchStep
+    launch
   },
   data() {
     return {

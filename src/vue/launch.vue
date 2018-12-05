@@ -16,7 +16,7 @@ import { getAllLeafDbIds } from "../js/utilitiesDbIds";
 import generateGeoContext from "../js_build/generateGeographicContext";
 
 export default {
-  name: "launchStep",
+  name: "launch",
   props: {
     update: {
       type: String,
