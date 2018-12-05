@@ -29,24 +29,22 @@ with this file. If not, see
       {{this.context.getName().get()}}
     </h3>
 
-    <md-steppers id="panel-generate-geographic-context"
+    <md-steppers id="steppers"
+                 md-alternative
                  :md-active-step.sync="activeStep">
-      <md-step class="step"
-               id="ref"
+      <md-step id="ref"
                md-label="Choose referential">
         <referential-selection :config="config" />
       </md-step>
 
-      <md-step class="step"
-               id="layout"
+      <md-step id="layout"
                md-label="Create layout"
                :md-error="layoutError">
         <level-list :levels="config.levels"
                     :show-warnings="layoutError !== null" />
       </md-step>
 
-      <md-step class="step"
-               id="launch"
+      <md-step id="launch"
                md-label="Launch the generation">
         <launch :update="update"
                 :context="context"
@@ -101,7 +99,6 @@ export default {
     opened(option) {
       this.update = "opened";
       this.context = option.context;
-
       this.activeStep = "ref";
       this.layoutError = null;
     },
@@ -118,19 +115,14 @@ export default {
 .md-menu-content {
   z-index: 110;
 }
+
+#steppers * {
+  box-sizing: border-box;
+}
 </style>
 
 <style scoped>
 #context-name {
   text-align: center;
-}
-
-.step {
-  box-sizing: border-box;
-}
-
-#panel-generate-geographic-context {
-  min-width: 600px;
-  width: 60vw;
 }
 </style>
