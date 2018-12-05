@@ -27,7 +27,7 @@ with this file. If not, see
     <md-icon v-show="showWarning && level.type === ''"
              class="md-accent">warning</md-icon>
 
-    <md-field>
+    <md-field id="level-field">
       <label>Level</label>
       <md-select v-model="level.type">
         <md-option v-for="(type, indexType) in availableTypes"
@@ -41,7 +41,7 @@ with this file. If not, see
     <md-icon v-show="showWarning && level.key === ''"
              class="md-accent">warning</md-icon>
 
-    <md-field>
+    <md-field id="key-field">
       <label>Key</label>
       <md-input v-model="level.key" />
     </md-field>
@@ -78,7 +78,8 @@ export default {
   display: flex;
 }
 
-#div-level * {
+#level-field,
+#key-field {
   margin-right: 20px;
 }
 </style>
