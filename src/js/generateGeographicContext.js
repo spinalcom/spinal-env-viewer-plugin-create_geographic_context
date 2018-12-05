@@ -31,9 +31,9 @@ import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
 import hasProperties from "../js/hasProperties";
 import createTmpTree from "../js/createTmpTree";
 
-const PROGRESS_BAR_SIZE_GET_PROPS = 25;
-const PROGRESS_BAR_SIZE_CREATE_TREE = 25;
-const PROGRESS_BAR_SIZE_CREATE_GRAPH = 50;
+const PROGRESS_BAR_SIZE_GET_PROPS = 10;
+const PROGRESS_BAR_SIZE_CREATE_TREE = 10;
+const PROGRESS_BAR_SIZE_CREATE_GRAPH = 80;
 const MAX_NON_SYNCHRONIZED_NODES = 300;
 
 async function getChild(parent, nodeName, relationName) {
