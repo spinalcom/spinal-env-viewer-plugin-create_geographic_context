@@ -28,8 +28,8 @@ import {
 } from "spinalgraph";
 import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
 
-import hasProperties from "./hasProperties";
-import createTmpTree from "./createTmpTree";
+import hasProperties from "../js/hasProperties";
+import createTmpTree from "../js/createTmpTree";
 
 const PROGRESS_BAR_SIZE_GET_PROPS = 25;
 const PROGRESS_BAR_SIZE_CREATE_TREE = 25;

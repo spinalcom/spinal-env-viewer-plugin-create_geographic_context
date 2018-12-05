@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import * as constants from "../js_build/constants";
+import * as constants from "../js/constants";
 import { getAllLeafDbIds } from "../js/utilitiesDbIds";
 import generateGeoContext from "../js_build/generateGeographicContext";
 

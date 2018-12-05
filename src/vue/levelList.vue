@@ -39,7 +39,7 @@ with this file. If not, see
 </template>
 
 <script>
-import * as constants from "../js_build/constants";
+import * as constants from "../js/constants";
 
 import level from "./level.vue";
 
