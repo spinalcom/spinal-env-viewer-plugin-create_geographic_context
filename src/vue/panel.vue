@@ -30,7 +30,7 @@ with this file. If not, see
     </h3>
 
     <md-steppers id="steppers"
-                 md-alternative
+                 md-vertical
                  :md-active-step.sync="activeStep">
       <md-step id="ref"
                md-label="Choose referential">
