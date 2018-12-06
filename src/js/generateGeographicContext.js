@@ -25,7 +25,7 @@
 import {
   SpinalNode,
   SPINAL_RELATION_TYPE
-} from "spinalgraph";
+} from "spinal-model-graph";
 import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
 
 import hasProperties from "../js/hasProperties";

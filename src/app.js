@@ -1,6 +1,6 @@
 import {
   SpinalContext
-} from "spinalgraph";
+} from "spinal-model-graph";
 
 import {
   SpinalContextApp
@@ -22,10 +22,8 @@ class GenerateGeoContextApp extends SpinalContextApp {
 
   isShown(option) {
     const context = option.selectedNode;
-
-    if (context instanceof SpinalContext &&
-      context.getType().get() === GeographicContextService.constants.CONTEXT_TYPE
-    ) {
+    console.log('alexis', option)
+    if (context.type.get() === GeographicContextService.constants.CONTEXT_TYPE) {
       return Promise.resolve(true);
     }
 
