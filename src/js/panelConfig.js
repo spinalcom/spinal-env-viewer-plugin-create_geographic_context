@@ -18,21 +18,17 @@ function lstToArray(lst) {
   return arr;
 }
 
-async function loadConfig(context) {
+async function loadConfig(config, context) {
   const contextElem = await context.getElement();
+  const modelConfig = contextElem.config;
 
-  if (typeof contextElem.config === "undefined") {
-    return JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+  if (typeof modelConfig === "undefined") {
+    return;
   }
 
-  const modelConfig = contextElem.config;
-  const convertedConfig = {};
-
-  convertedConfig.useAllDbIds = modelConfig.useAllDbIds.get();
-  convertedConfig.referential = lstToArray(modelConfig.referential);
-  convertedConfig.levels = lstToArray(modelConfig.levels);
-
-  return convertedConfig;
+  config.useAllDbIds = modelConfig.useAllDbIds.get();
+  config.referential = lstToArray(modelConfig.referential);
+  config.levels = lstToArray(modelConfig.levels);
 }
 
 async function saveConfig(context, config) {

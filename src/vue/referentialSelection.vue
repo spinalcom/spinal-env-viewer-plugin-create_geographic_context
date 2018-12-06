@@ -44,6 +44,8 @@ with this file. If not, see
 </template>
 
 <script>
+import { getAllLeafDbIds } from "../js/utilitiesDbIds";
+
 export default {
   name: "referentialSelection",
   props: {
@@ -53,13 +55,19 @@ export default {
     }
   },
   data() {
-    this.viewer;
+    this.viewer = window.spinal.ForgeViewer.viewer;
+    this.allDbIds = getAllLeafDbIds();
     return {};
   },
   watch: {
-    ["config.useAllDbIds"](newValue) {
-      if (!newValue) {
-        this.clearReferential();
+    ["config.useAllDbIds"]: {
+      immediate: true,
+      handler(newValue) {
+        if (!newValue) {
+          this.clearReferential();
+        } else {
+          this.config.referential = this.allDbIds.slice();
+        }
       }
     }
   },
@@ -85,9 +93,6 @@ export default {
     clearReferential() {
       this.config.referential = [];
     }
-  },
-  created() {
-    this.viewer = window.spinal.ForgeViewer.viewer;
   }
 };
 </script>

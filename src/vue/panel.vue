@@ -47,6 +47,7 @@ with this file. If not, see
       <md-step id="launch"
                md-label="Launch the generation">
         <launch :update="update"
+                :active-step="activeStep"
                 :context="context"
                 :config="config"
                 @layoutError="e => layoutError = e" />
@@ -87,7 +88,7 @@ export default {
         await saveConfig(oldValue, this.config);
       }
 
-      this.config = await loadConfig(this.context);
+      await loadConfig(this.config, this.context);
     },
     layoutError(newValue, oldValue) {
       if (oldValue === "layout") {

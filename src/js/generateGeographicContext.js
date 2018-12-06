@@ -28,7 +28,6 @@ import {
 } from "spinalgraph";
 import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
 
-import hasProperties from "../js/hasProperties";
 import createTmpTree from "../js/createTmpTree";
 
 const PROGRESS_BAR_SIZE_GET_PROPS = 10;
@@ -119,20 +118,12 @@ async function waitForFileSystem(promises) {
  * Generates a geographic context using the autodesk forge object tree.
  * @param {SpinalContext} context Context to fill
  * @param {Object} layout Object containing the types, keys and relation names necessary to generate the context
- * @param {Array<Number>} referential DbIds to use
+ * @param {Array<Object>} props Properties to use
  * @param {Object<value: Number>} progression Object containing the progression of the generation
  * @return {SpinalContext} The geographic context
  */
-async function generateGeoContext(context, layout, referential, progression) {
-  const promiseResults = await Promise.all([
-    hasProperties(referential, layout.keys), // Get all useful properties
-    bimObjectService.getContext() // Create BIMObjectContext if it isn't already done
-  ]);
-  const props = promiseResults[0].valid;
-
-  if (props.length === 0) {
-    return;
-  }
+async function generateGeoContext(context, layout, props, progression) {
+  await bimObjectService.getContext() // Create BIMObjectContext if it isn't already done
 
   progression.value = PROGRESS_BAR_SIZE_GET_PROPS;
 
