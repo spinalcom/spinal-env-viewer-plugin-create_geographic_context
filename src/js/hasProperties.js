@@ -70,6 +70,7 @@ function createSimplifiedProperty(prop, keys) {
 
 async function addBIMObjectProps(props) {
   let BIMObjects = [];
+  const validProps = props.slice();
 
   for (let prop of props) {
     BIMObjects.push(
@@ -83,7 +84,7 @@ async function addBIMObjectProps(props) {
   while (i < BIMObjects.length) {
     if (typeof BIMObjects[i] === "undefined") {
       BIMObjects.splice(i, 1);
-      props.splice(i, 1);
+      validProps.splice(i, 1);
     } else {
       i++;
     }
@@ -98,7 +99,7 @@ async function addBIMObjectProps(props) {
   attributes = await Promise.all(attributes);
 
   for (let i = 0; i < attributes.length; i++) {
-    let prop = props[i];
+    let prop = validProps[i];
 
     for (let attr of attributes[i]) {
       let convert = {
