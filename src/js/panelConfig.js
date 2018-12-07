@@ -1,4 +1,6 @@
-import { SpinalGraphService } from "spinal-env-viewer-graph-service";
+import {
+  SpinalGraphService
+} from "spinal-env-viewer-graph-service";
 
 const DEFAULT_CONFIG = Object.freeze({
   useAllDbIds: true,
@@ -10,7 +12,7 @@ function getDefaultConfig() {
   return JSON.parse(JSON.stringify(DEFAULT_CONFIG));
 }
 
-function lstToArray( lst) {
+function lstToArray(lst) {
   const arr = [];
 
   for (let i = 0; i < lst.length; i++) {
@@ -20,9 +22,17 @@ function lstToArray( lst) {
   return arr;
 }
 
-async function loadConfig( config, context) {
-  const contextElem = await SpinalGraphService.getRealNode( context.id.get() ).getElement();
-  const modelConfig = contextElem.config;
+async function loadConfig(config, context) {
+  let contextElem;
+  let modelConfig;
+
+  try {
+    contextElem = await SpinalGraphService.getRealNode(context.id.get()).getElement();
+    modelConfig = contextElem.config;
+  } catch (e) {
+    console.error(e);
+    return;
+  }
 
   if (typeof modelConfig === "undefined") {
     return;
@@ -33,8 +43,14 @@ async function loadConfig( config, context) {
   config.levels = lstToArray(modelConfig.levels);
 }
 
-async function saveConfig( context, config) {
-  const contextElem = await SpinalGraphService.getRealNode( context.id.get() ).getElement();
+async function saveConfig(context, config) {
+  let contextElem;
+
+  try {
+    contextElem = await SpinalGraphService.getRealNode(context.id.get()).getElement();
+  } catch (e) {
+    console.error(e);
+  }
 
   contextElem.mod_attr("config", config);
 }

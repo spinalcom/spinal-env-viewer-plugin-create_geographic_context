@@ -103,9 +103,9 @@ export default {
       this.layoutError = null;
     },
     removed() {},
-    closed() {
+    async closed() {
       this.update = "closed";
-      saveConfig(this.context, this.config);
+      await saveConfig(this.context, this.config);
     }
   }
 };
