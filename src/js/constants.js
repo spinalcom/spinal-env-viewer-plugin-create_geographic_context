@@ -30,18 +30,21 @@ const {
   EQUIPMENT_RELATION
 } = geoConstants;
 
+const SITE_TYPE = "Site";
 const BUILDING_TYPE = "Building";
 const FLOOR_TYPE = "Floor";
 const ZONE_TYPE = "Zone";
 const ROOM_TYPE = "Room";
 
 const GEOGRAPHIC_TYPES = Object.freeze([
+  SITE_TYPE,
   BUILDING_TYPE,
   FLOOR_TYPE,
   ROOM_TYPE
 ]);
 
 const MAP_TYPES = Object.freeze(new Map([
+  [SITE_TYPE, geoConstants.SITE_TYPE],
   [BUILDING_TYPE, geoConstants.BUILDING_TYPE],
   [FLOOR_TYPE, geoConstants.FLOOR_TYPE],
   [ZONE_TYPE, geoConstants.ZONE_TYPE],
@@ -49,6 +52,7 @@ const MAP_TYPES = Object.freeze(new Map([
 ]));
 
 const MAP_RELATIONS = Object.freeze(new Map([
+  [SITE_TYPE, geoConstants.SITE_RELATION],
   [BUILDING_TYPE, geoConstants.BUILDING_RELATION],
   [FLOOR_TYPE, geoConstants.FLOOR_RELATION],
   [ZONE_TYPE, geoConstants.ZONE_RELATION],
@@ -57,6 +61,7 @@ const MAP_RELATIONS = Object.freeze(new Map([
 
 export {
   EQUIPMENT_RELATION,
+  SITE_TYPE,
   BUILDING_TYPE,
   FLOOR_TYPE,
   ZONE_TYPE,
