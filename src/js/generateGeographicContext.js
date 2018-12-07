@@ -23,9 +23,9 @@
  */
 
 import {
-  SpinalNode,
-  SPINAL_RELATION_TYPE
-} from "spinalgraph";
+  SPINAL_RELATION_TYPE,
+  SpinalNode
+} from "spinal-env-viewer-graph-service";
 import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
 
 import createTmpTree from "../js/createTmpTree";
@@ -123,7 +123,7 @@ async function waitForFileSystem(promises) {
  * @return {SpinalContext} The geographic context
  */
 async function generateGeoContext(context, layout, props, progression) {
-  await bimObjectService.getContext() // Create BIMObjectContext if it isn't already done
+  await bimObjectService.getContext(); // Create BIMObjectContext if it isn't already done
 
   progression.value = PROGRESS_BAR_SIZE_GET_PROPS;
 

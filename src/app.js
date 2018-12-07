@@ -1,13 +1,5 @@
-import {
-  SpinalContext
-} from "spinalgraph";
-
-import {
-  SpinalContextApp
-} from "spinal-env-viewer-context-menu-service";
-import {
-  spinalPanelManagerService
-} from "spinal-env-viewer-panel-manager-service";
+import { SpinalContextApp } from "spinal-env-viewer-context-menu-service";
+import { spinalPanelManagerService } from "spinal-env-viewer-panel-manager-service";
 import GeographicContextService from "spinal-env-viewer-context-geographic-service";
 
 class GenerateGeoContextApp extends SpinalContextApp {
@@ -23,8 +15,8 @@ class GenerateGeoContextApp extends SpinalContextApp {
   isShown(option) {
     const context = option.selectedNode;
 
-    if (context instanceof SpinalContext &&
-      context.getType().get() === GeographicContextService.constants.CONTEXT_TYPE
+    if (
+      context.type.get() === GeographicContextService.constants.CONTEXT_TYPE
     ) {
       return Promise.resolve(true);
     }

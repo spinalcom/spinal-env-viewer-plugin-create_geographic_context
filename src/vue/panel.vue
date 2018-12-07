@@ -26,7 +26,7 @@ with this file. If not, see
   <div>
     <h3 v-if="context !== null"
         id="context-name">
-      {{this.context.getName().get()}}
+      {{this.context.name.get()}}
     </h3>
 
     <md-steppers id="steppers"
@@ -57,13 +57,17 @@ with this file. If not, see
 </template>
 
 <script>
-import referentialSelection from "./referentialSelection.vue";
-import levelList from "./levelList.vue";
-import launch from "./launch.vue";
+  import referentialSelection from "./referentialSelection.vue";
+  import levelList from "./levelList.vue";
+  import launch from "./launch.vue";
 
-import { getDefaultConfig, loadConfig, saveConfig } from "../js/panelConfig";
+  import {
+    getDefaultConfig,
+    loadConfig,
+    saveConfig
+  } from "../js/panelConfig";
 
-export default {
+  export default {
   name: "dialogCreateGeographicContext",
   components: {
     referentialSelection,
