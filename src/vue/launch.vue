@@ -1,13 +1,20 @@
 <template>
   <div id="launch-step">
     <div v-if="!showLoad">
-      <md-button @click="selectValid">
-        {{valid.length}} VALID OBJECTS
-      </md-button><br />
+      <md-button class="md-raised md-primary"
+                 @click="loadProps">
+        LOAD OBJECTS
+      </md-button>
 
-      <md-button @click="selectInvalid">
-        {{invalid.length}} INVALID OBJECTS
-      </md-button><br />
+      <div v-if="showProps">
+        <md-button @click="selectValid">
+          {{valid.length}} VALID OBJECTS
+        </md-button><br />
+
+        <md-button @click="selectInvalid">
+          {{invalid.length}} INVALID OBJECTS
+        </md-button><br />
+      </div>
 
       <md-button v-if="layout !== null && layout.types.length !== 0 && valid.length !== 0"
                  class="md-raised md-primary"
@@ -34,10 +41,6 @@ export default {
       type: String,
       required: true
     },
-    activeStep: {
-      type: String,
-      required: true
-    },
     context: {
       // Allows for null value
       validator: value => typeof value === "object"
@@ -50,9 +53,10 @@ export default {
   data() {
     this.viewer = window.spinal.ForgeViewer.viewer;
     return {
+      layout: null,
       valid: [],
       invalid: [],
-      layout: null,
+      showProps: false,
       showLoad: false,
       progression: { value: 0 }
     };
@@ -60,28 +64,10 @@ export default {
   watch: {
     update() {
       if (this.update === "changeContext") {
+        this.showProps = false;
         this.showLoad = false;
         this.progression = { value: 0 };
       }
-    },
-    async activeStep() {
-      if (this.activeStep !== "launch") {
-        return;
-      }
-
-      this.layout = this.getLayout();
-
-      if (this.layout === null) {
-        return;
-      }
-
-      const res = await hasProperties(
-        this.config.referential,
-        this.layout.keys
-      );
-
-      this.valid = res.valid;
-      this.invalid = res.invalid;
     }
   },
   methods: {
@@ -101,6 +87,25 @@ export default {
 
       layout.relations.push(constants.EQUIPMENT_RELATION);
       return layout;
+    },
+    async getProps() {
+      this.layout = this.getLayout();
+
+      if (this.layout === null) {
+        return;
+      }
+
+      const res = await hasProperties(
+        this.config.referential,
+        this.layout.keys
+      );
+
+      this.valid = res.valid;
+      this.invalid = res.invalid;
+    },
+    async loadProps() {
+      await this.getProps();
+      this.showProps = true;
     },
     selectValid() {
       const dbIds = [];
