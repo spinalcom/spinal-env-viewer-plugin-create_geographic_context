@@ -1,5 +1,9 @@
-import { SpinalContextApp } from "spinal-env-viewer-context-menu-service";
-import { spinalPanelManagerService } from "spinal-env-viewer-panel-manager-service";
+import {
+  SpinalContextApp
+} from "spinal-env-viewer-context-menu-service";
+import {
+  spinalPanelManagerService
+} from "spinal-env-viewer-panel-manager-service";
 import GeographicContextService from "spinal-env-viewer-context-geographic-service";
 
 class GenerateGeoContextApp extends SpinalContextApp {
