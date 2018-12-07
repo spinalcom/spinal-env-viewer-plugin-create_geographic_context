@@ -24,7 +24,8 @@
 
 import {
   SPINAL_RELATION_TYPE,
-  SpinalNode
+  SpinalNode,
+  SpinalGraphService
 } from "spinal-env-viewer-graph-service";
 import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
 
@@ -43,12 +44,12 @@ const MAX_NON_SYNCHRONIZED_NODES = 300;
  * @return {Array<SpinalNode | null} An array of the children that were found and of undefined
  */
 async function getChildrenByNames(parent, nodeNames, relationName) {
-  const children = await parent.getChildren(relationName);
+  const children = await SpinalGraphService.getChildren(parent.id, relationName);
   const found = [];
 
   for (let name of nodeNames) {
     found.push(children.find(child => {
-      return child.getName().get() === name
+      return child.name.get() === name
     }));
   }
 
@@ -74,14 +75,20 @@ async function* generateGeoContextRec(context, parent, children, layout, depth) 
       let [name, value] = entries.next().value;
 
       if (typeof child === "undefined") {
-        child = new SpinalNode(name, layout.types[depth]);
+        child = SpinalGraphService.createNode({
+          name,
+          type: layout.types[depth]
+        });
 
-        yield parent.addChildInContext(
+        yield SpinalGraphService.addChildInContext(
+          parent.id,
           child,
+          context.id,
           layout.relations[depth],
-          SPINAL_RELATION_TYPE,
-          context
+          SPINAL_RELATION_TYPE
         );
+
+        child = SpinalGraphService.getInfo(child);
       }
 
       yield* generateGeoContextRec(context, child, value, layout, depth + 1);
@@ -123,8 +130,6 @@ async function waitForFileSystem(promises) {
  * @return {SpinalContext} The geographic context
  */
 async function generateGeoContext(context, layout, props, progression) {
-  await bimObjectService.getContext(); // Create BIMObjectContext if it isn't already done
-
   progression.value = PROGRESS_BAR_SIZE_GET_PROPS;
 
   const tmpTree = createTmpTree(props);
