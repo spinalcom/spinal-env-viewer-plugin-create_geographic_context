@@ -116,13 +116,18 @@ export default {
     },
     async generateContext() {
       this.showLoad = true;
-      await generateGeoContext(
-        this.context,
-        this.layout,
-        this.valid,
-        this.progression
-      );
-      this.showLoad = false;
+      try {
+        await generateGeoContext(
+          this.context,
+          this.layout,
+          this.valid,
+          this.progression
+        );
+      } catch (e) {
+        console.error(e);
+      } finally {
+        this.showLoad = false;
+      }
       this.progression.value = 0;
     }
   }
