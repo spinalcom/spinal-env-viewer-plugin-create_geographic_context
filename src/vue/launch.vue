@@ -3,7 +3,7 @@
     <div v-if="!showLoad">
       <md-button class="md-raised md-primary"
                  @click="loadProps">
-        LOAD OBJECTS
+        VERIFY OBJECTS
       </md-button>
 
       <div v-if="showProps">
@@ -19,7 +19,7 @@
       <md-button v-if="layout !== null && layout.types.length !== 0 && valid.length !== 0"
                  class="md-raised md-primary"
                  @click="generateContext">
-        Start
+        LAUNCH CONTEXT GENERATION
       </md-button>
     </div>
 
