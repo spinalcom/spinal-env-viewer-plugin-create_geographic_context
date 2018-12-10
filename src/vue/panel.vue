@@ -34,7 +34,8 @@ with this file. If not, see
                  :md-active-step.sync="activeStep">
       <md-step id="ref"
                md-label="Choose referential">
-        <referential-selection :config="config" />
+        <referential-selection :update="update"
+                               :config="config" />
       </md-step>
 
       <md-step id="layout"
@@ -83,11 +84,13 @@ export default {
     async context(newValue, oldValue) {
       this.update = "changeContext";
 
-      if (oldValue) {
-        await saveConfig(oldValue, this.config);
-      }
-
       await loadConfig(this.config, this.context);
+    },
+    config: {
+      deep: true,
+      handler() {
+        saveConfig(this.context, this.config);
+      }
     },
     layoutError(newValue, oldValue) {
       if (oldValue === "layout") {
@@ -103,9 +106,8 @@ export default {
       this.layoutError = null;
     },
     removed() {},
-    async closed() {
+    closed() {
       this.update = "closed";
-      await saveConfig(this.context, this.config);
     }
   }
 };
