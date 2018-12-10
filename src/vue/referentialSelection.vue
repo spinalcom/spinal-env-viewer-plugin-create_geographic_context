@@ -25,6 +25,7 @@ with this file. If not, see
 <template>
   <div>
     <md-checkbox v-model="config.useAllDbIds"
+                 @change="changeMode"
                  class="md-primary">
       Use whole digitital twin
     </md-checkbox>
@@ -49,6 +50,10 @@ import { getAllLeafDbIds } from "../js/utilitiesDbIds";
 export default {
   name: "referentialSelection",
   props: {
+    update: {
+      type: String,
+      required: true
+    },
     config: {
       type: Object,
       required: true
@@ -60,18 +65,24 @@ export default {
     return {};
   },
   watch: {
-    ["config.useAllDbIds"]: {
-      immediate: true,
-      handler(newValue) {
-        if (!newValue) {
-          this.clearReferential();
-        } else {
-          this.config.referential = this.allDbIds.slice();
-        }
+    update() {
+      if (this.update !== "changeContext") {
+        return;
+      }
+
+      if (this.config.useAllDbIds) {
+        this.config.referential = this.allDbIds.slice();
       }
     }
   },
   methods: {
+    changeMode(newValue) {
+      if (!newValue) {
+        this.clearReferential();
+      } else {
+        this.config.referential = this.allDbIds.slice();
+      }
+    },
     addSelection() {
       const model = this.viewer.model;
       const tree = model.getData().instanceTree;
