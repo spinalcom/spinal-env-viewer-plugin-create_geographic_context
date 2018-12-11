@@ -57,6 +57,8 @@ with this file. If not, see
 </template>
 
 <script>
+import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
+
 import referentialSelection from "./referentialSelection.vue";
 import layout from "./layout.vue";
 import launch from "./launch.vue";
@@ -104,6 +106,8 @@ export default {
       this.context = option.context;
       this.activeStep = "ref";
       this.layoutError = null;
+
+      bimObjectService.getContext();
     },
     removed() {},
     closed() {

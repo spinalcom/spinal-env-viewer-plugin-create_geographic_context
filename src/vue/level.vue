@@ -45,7 +45,7 @@ with this file. If not, see
     <md-field id="param-field">
       <label v-if="level.option === constants.LEVEL_OPTION_BY_KEY">Key</label>
 
-      <label v-else-if="level.option === constants.LEVEL_OPTION_FIXED">Value</label>
+      <label v-else-if="level.option === constants.LEVEL_OPTION_FIXED">Fixed Value</label>
 
       <md-input v-model="level.param" />
     </md-field>
