@@ -118,10 +118,6 @@ export default {
 </script>
 
 <style>
-.md-menu-content {
-  z-index: 110;
-}
-
 #steppers * {
   box-sizing: border-box;
 }
