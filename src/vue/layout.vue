@@ -32,12 +32,12 @@ with this file. If not, see
            @removeLevel="removeLevel(index)" />
 
     <md-button @click="addLevel(constants.LEVEL_OPTION_BY_KEY)"
-               class="button-add-level">
+               class="md-raised button-add-level">
       NORMAL
     </md-button>
 
     <md-button @click="addLevel(constants.LEVEL_OPTION_FIXED)"
-               class="button-add-level">
+               class="md-raised button-add-level">
       FIXED
     </md-button>
   </div>
