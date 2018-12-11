@@ -29,6 +29,7 @@ with this file. If not, see
 
     <md-field id="level-field">
       <label>Level</label>
+
       <md-select v-model="level.type">
         <md-option v-for="(type, indexType) in availableTypes"
                    :key="indexType"
@@ -38,12 +39,15 @@ with this file. If not, see
       </md-select>
     </md-field>
 
-    <md-icon v-show="showWarning && level.key === ''"
+    <md-icon v-show="showWarning && level.param === ''"
              class="md-accent">warning</md-icon>
 
-    <md-field id="key-field">
-      <label>Key</label>
-      <md-input v-model="level.key" />
+    <md-field id="param-field">
+      <label v-if="level.option === constants.LEVEL_OPTION_BY_KEY">Key</label>
+
+      <label v-else-if="level.option === constants.LEVEL_OPTION_FIXED">Value</label>
+
+      <md-input v-model="level.param" />
     </md-field>
 
     <md-button class="md-icon-button"
@@ -54,6 +58,8 @@ with this file. If not, see
 </template>
 
 <script>
+import * as constants from "../js/constants";
+
 export default {
   name: "level",
   props: {
@@ -69,6 +75,10 @@ export default {
       type: Boolean,
       required: true
     }
+  },
+  data() {
+    this.constants = constants;
+    return {};
   }
 };
 </script>
@@ -79,7 +89,7 @@ export default {
 }
 
 #level-field,
-#key-field {
+#param-field {
   margin-right: 20px;
 }
 </style>

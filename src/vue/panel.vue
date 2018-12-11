@@ -41,8 +41,8 @@ with this file. If not, see
       <md-step id="layout"
                md-label="Create layout"
                :md-error="layoutError">
-        <level-list :levels="config.levels"
-                    :show-warnings="layoutError !== null" />
+        <layout :levels="config.levels"
+                :show-warnings="layoutError !== null" />
       </md-step>
 
       <md-step id="launch"
@@ -58,7 +58,7 @@ with this file. If not, see
 
 <script>
 import referentialSelection from "./referentialSelection.vue";
-import levelList from "./levelList.vue";
+import layout from "./layout.vue";
 import launch from "./launch.vue";
 
 import { getDefaultConfig, loadConfig, saveConfig } from "../js/panelConfig";
@@ -67,7 +67,7 @@ export default {
   name: "dialogCreateGeographicContext",
   components: {
     referentialSelection,
-    levelList,
+    layout,
     launch
   },
   data() {

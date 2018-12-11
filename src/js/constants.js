@@ -59,6 +59,9 @@ const MAP_RELATIONS = Object.freeze(new Map([
   [ROOM_TYPE, geoConstants.ROOM_RELATION]
 ]));
 
+const LEVEL_OPTION_BY_KEY = "none";
+const LEVEL_OPTION_FIXED = "fixed";
+
 export {
   EQUIPMENT_RELATION,
   SITE_TYPE,
@@ -68,5 +71,7 @@ export {
   ROOM_TYPE,
   GEOGRAPHIC_TYPES,
   MAP_TYPES,
-  MAP_RELATIONS
+  MAP_RELATIONS,
+  LEVEL_OPTION_BY_KEY,
+  LEVEL_OPTION_FIXED
 };

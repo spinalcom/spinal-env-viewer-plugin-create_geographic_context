@@ -81,9 +81,9 @@ async function* generateGeoContextRec(context, parent, children, layout, depth) 
         });
 
         yield SpinalGraphService.addChildInContext(
-          parent.id,
+          parent.id.get(),
           child,
-          context.id,
+          context.id.get(),
           layout.relations[depth],
           SPINAL_RELATION_TYPE
         );
@@ -94,6 +94,9 @@ async function* generateGeoContextRec(context, parent, children, layout, depth) 
       yield* generateGeoContextRec(context, child, value, layout, depth + 1);
     }
   } else {
+    context = SpinalGraphService.getRealNode(context.id.get());
+    parent = SpinalGraphService.getRealNode(parent.id.get());
+
     for (let child of children) {
       yield bimObjectService.addBIMObject(context, parent, child.dbId, child.name);
     }

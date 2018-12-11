@@ -31,9 +31,14 @@ with this file. If not, see
            :show-warning="showWarnings"
            @removeLevel="removeLevel(index)" />
 
-    <md-button @click="addLevel"
-               id="button-add-level">
-      <md-icon>add</md-icon>
+    <md-button @click="addLevel(constants.LEVEL_OPTION_BY_KEY)"
+               class="button-add-level">
+      NORMAL
+    </md-button>
+
+    <md-button @click="addLevel(constants.LEVEL_OPTION_FIXED)"
+               class="button-add-level">
+      FIXED
     </md-button>
   </div>
 </template>
@@ -44,7 +49,7 @@ import * as constants from "../js/constants";
 import level from "./level.vue";
 
 export default {
-  name: "levelList",
+  name: "layout",
   props: {
     levels: {
       type: Array,
@@ -63,8 +68,8 @@ export default {
     return {};
   },
   methods: {
-    addLevel() {
-      this.levels.push({ type: "", key: "" });
+    addLevel(option) {
+      this.levels.push({ type: "", param: "", option: option });
     },
     removeLevel(index) {
       this.levels.splice(index, 1);
@@ -125,7 +130,7 @@ export default {
 </script>
 
 <style scoped>
-#button-add-level {
-  width: 100%;
+.button-add-level {
+  width: 45%;
 }
 </style>

@@ -75,13 +75,13 @@ export default {
       let layout = { types: [], keys: [], relations: [] };
 
       for (let level of this.config.levels) {
-        if (level.key === "" || level.type === "") {
+        if (level.type === "" || level.param === "") {
           this.$emit("layoutError", "Incomplete layout");
           return null;
         }
 
         layout.types.push(constants.MAP_TYPES.get(level.type));
-        layout.keys.push(level.key);
+        layout.keys.push(level.param);
         layout.relations.push(constants.MAP_RELATIONS.get(level.type));
       }
 
@@ -95,10 +95,15 @@ export default {
         return;
       }
 
-      const res = await hasProperties(
-        this.config.referential,
-        this.layout.keys
-      );
+      const keys = [];
+
+      for (let level of this.config.levels) {
+        if (level.option !== constants.LEVEL_OPTION_FIXED) {
+          keys.push(level.param);
+        }
+      }
+
+      const res = await hasProperties(this.config.referential, keys);
 
       this.valid = res.valid;
       this.invalid = res.invalid;
@@ -122,6 +127,16 @@ export default {
     async generateContext() {
       this.showLoad = true;
       try {
+        for (let [index, level] of this.config.levels.entries()) {
+          if (level.option !== constants.LEVEL_OPTION_FIXED) {
+            continue;
+          }
+
+          for (let prop of this.valid) {
+            prop.properties.splice(index, 0, { value: level.param });
+          }
+        }
+
         await generateGeoContext(
           this.context,
           this.layout,
@@ -132,8 +147,8 @@ export default {
         console.error(e);
       } finally {
         this.showLoad = false;
+        this.progression.value = 0;
       }
-      this.progression.value = 0;
     }
   }
 };
@@ -148,4 +163,3 @@ export default {
   height: 20px;
 }
 </style>
-
