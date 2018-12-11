@@ -33,14 +33,17 @@ with this file. If not, see
     <div v-show="!config.useAllDbIds">
       <md-button @click="addSelection">
         <md-icon>add</md-icon>
+        <md-tooltip md-delay="300">Add selection to referential</md-tooltip>
       </md-button>
 
       <md-button @click="clearReferential">
         <md-icon>clear</md-icon>
+        <md-tooltip md-delay="300">Clear referential</md-tooltip>
       </md-button>
 
       <md-button @click="showReferential">
         <md-icon>remove_red_eye</md-icon>
+        <md-tooltip md-delay="300">Show referential</md-tooltip>
       </md-button>
 
       <p>{{config.referential.length}} objects selected</p>
