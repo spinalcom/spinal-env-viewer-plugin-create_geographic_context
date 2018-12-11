@@ -39,6 +39,10 @@ with this file. If not, see
         <md-icon>clear</md-icon>
       </md-button>
 
+      <md-button @click="showReferential">
+        <md-icon>remove_red_eye</md-icon>
+      </md-button>
+
       <p>{{config.referential.length}} objects selected</p>
     </div>
   </div>
@@ -103,6 +107,9 @@ export default {
     },
     clearReferential() {
       this.config.referential = [];
+    },
+    showReferential() {
+      this.viewer.select(this.config.referential);
     }
   }
 };
