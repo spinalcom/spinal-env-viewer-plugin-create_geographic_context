@@ -42,7 +42,7 @@ with this file. If not, see
       </md-button>
 
       <md-button @click="showReferential">
-        <md-icon>remove_red_eye</md-icon>
+        <md-icon>visibility</md-icon>
         <md-tooltip md-delay="300">Show referential</md-tooltip>
       </md-button>
 

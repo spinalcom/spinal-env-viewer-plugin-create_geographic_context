@@ -106,8 +106,6 @@ export default {
       this.context = option.context;
       this.activeStep = "ref";
       this.layoutError = null;
-
-      bimObjectService.getContext();
     },
     removed() {},
     closed() {
