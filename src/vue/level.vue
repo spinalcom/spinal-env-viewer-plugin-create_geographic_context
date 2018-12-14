@@ -79,6 +79,14 @@ export default {
   data() {
     this.constants = constants;
     return {};
+  },
+  watch: {
+    level: {
+      deep: true,
+      handler() {
+        this.$emit("levelChanged");
+      }
+    }
   }
 };
 </script>

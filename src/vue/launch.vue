@@ -6,7 +6,7 @@
         VERIFY OBJECTS
       </md-button>
 
-      <div v-if="showProps">
+      <div v-if="propsLoaded">
         <md-button @click="selectValid">
           {{valid.length}} VALID OBJECTS
         </md-button><br />
@@ -14,13 +14,13 @@
         <md-button @click="selectInvalid">
           {{invalid.length}} INVALID OBJECTS
         </md-button><br />
-      </div>
 
-      <md-button v-if="layout !== null && layout.types.length !== 0 && valid.length !== 0"
-                 class="md-raised md-primary"
-                 @click="generateContext">
-        LAUNCH CONTEXT GENERATION
-      </md-button>
+        <md-button v-if="layout.types.length !== 0 && valid.length !== 0"
+                   class="md-raised md-primary"
+                   @click="generateContext">
+          LAUNCH CONTEXT GENERATION
+        </md-button>
+      </div>
     </div>
 
     <md-progress-bar v-else
@@ -56,15 +56,15 @@ export default {
       layout: null,
       valid: [],
       invalid: [],
-      showProps: false,
+      propsLoaded: false,
       showLoad: false,
       progression: { value: 0 }
     };
   },
   watch: {
     update() {
-      if (this.update === "changeContext") {
-        this.showProps = false;
+      if (this.update == "opened") {
+        this.propsLoaded = false;
         this.showLoad = false;
         this.progression = { value: 0 };
       }
@@ -88,10 +88,11 @@ export default {
       layout.relations.push(constants.EQUIPMENT_RELATION);
       return layout;
     },
-    async getProps() {
+    async loadProps() {
       this.layout = this.getLayout();
 
       if (this.layout === null) {
+        this.propsLoaded = false;
         return;
       }
 
@@ -107,10 +108,7 @@ export default {
 
       this.valid = res.valid;
       this.invalid = res.invalid;
-    },
-    async loadProps() {
-      await this.getProps();
-      this.showProps = true;
+      this.propsLoaded = true;
     },
     selectValid() {
       const dbIds = [];

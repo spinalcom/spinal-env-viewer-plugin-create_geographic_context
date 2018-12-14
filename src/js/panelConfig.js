@@ -22,7 +22,8 @@ function lstToArray(lst) {
   return arr;
 }
 
-async function loadConfig(config, context) {
+async function loadConfig(context) {
+  const config = {};
   let contextElem;
   let modelConfig;
 
@@ -31,16 +32,18 @@ async function loadConfig(config, context) {
     modelConfig = contextElem.config;
   } catch (e) {
     console.error(e);
-    return;
+    return getDefaultConfig();
   }
 
   if (typeof modelConfig === "undefined") {
-    return;
+    return getDefaultConfig();
   }
 
   config.useAllDbIds = modelConfig.useAllDbIds.get();
   config.referential = lstToArray(modelConfig.referential);
   config.levels = lstToArray(modelConfig.levels);
+
+  return config;
 }
 
 async function saveConfig(context, config) {
@@ -50,6 +53,7 @@ async function saveConfig(context, config) {
     contextElem = await SpinalGraphService.getRealNode(context.id.get()).getElement();
   } catch (e) {
     console.error(e);
+    return;
   }
 
   contextElem.mod_attr("config", config);

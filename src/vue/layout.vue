@@ -29,6 +29,7 @@ with this file. If not, see
            :level="level"
            :available-types="getAvailableTypes(index)"
            :show-warning="showWarnings"
+           @levelChanged="() => $emit('levelChanged')"
            @removeLevel="removeLevel(index)" />
 
     <md-button @click="addLevel(constants.LEVEL_OPTION_BY_KEY)"
@@ -64,15 +65,17 @@ export default {
     level
   },
   data() {
-    this.constants;
+    this.constants = constants;
     return {};
   },
   methods: {
     addLevel(option) {
       this.levels.push({ type: "", param: "", option: option });
+      this.$emit("levelChanged");
     },
     removeLevel(index) {
       this.levels.splice(index, 1);
+      this.$emit("levelChanged");
     },
     getMinTypeIndex(indexLevel) {
       let i = indexLevel;
@@ -122,9 +125,6 @@ export default {
       }
       return available.concat(constants.ZONE_TYPE);
     }
-  },
-  created() {
-    this.constants = constants;
   }
 };
 </script>

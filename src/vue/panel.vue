@@ -23,9 +23,8 @@ with this file. If not, see
 -->
 
 <template>
-  <div>
-    <h3 v-if="context !== null"
-        id="context-name">
+  <div v-if="context !== null && config !== null">
+    <h3 id="context-name">
       {{this.context.name.get()}}
     </h3>
 
@@ -35,14 +34,16 @@ with this file. If not, see
       <md-step id="ref"
                md-label="Choose referential">
         <referential-selection :update="update"
-                               :config="config" />
+                               :config="config"
+                               @configChanged="saveConfig" />
       </md-step>
 
       <md-step id="layout"
                md-label="Create layout"
                :md-error="layoutError">
         <layout :levels="config.levels"
-                :show-warnings="layoutError !== null" />
+                :show-warnings="layoutError !== null"
+                @levelChanged="saveConfig" />
       </md-step>
 
       <md-step id="launch"
@@ -57,13 +58,11 @@ with this file. If not, see
 </template>
 
 <script>
-import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
-
 import referentialSelection from "./referentialSelection.vue";
 import layout from "./layout.vue";
 import launch from "./launch.vue";
 
-import { getDefaultConfig, loadConfig, saveConfig } from "../js/panelConfig";
+import { loadConfig, saveConfig } from "../js/panelConfig";
 
 export default {
   name: "dialogCreateGeographicContext",
@@ -77,23 +76,12 @@ export default {
       showDialog: true,
       update: "",
       context: null,
-      config: getDefaultConfig(),
+      config: null,
       activeStep: "",
       layoutError: null
     };
   },
   watch: {
-    async context(newValue, oldValue) {
-      this.update = "changeContext";
-
-      await loadConfig(this.config, this.context);
-    },
-    config: {
-      deep: true,
-      handler() {
-        saveConfig(this.context, this.config);
-      }
-    },
     layoutError(newValue, oldValue) {
       if (oldValue === "layout") {
         this.layoutError = null;
@@ -101,15 +89,19 @@ export default {
     }
   },
   methods: {
-    opened(option) {
-      this.update = "opened";
+    async opened(option) {
+      this.update = new String("opened");
       this.context = option.context;
+      this.config = await loadConfig(this.context);
       this.activeStep = "ref";
       this.layoutError = null;
     },
     removed() {},
     closed() {
-      this.update = "closed";
+      this.update = new String("closed");
+    },
+    async saveConfig() {
+      await saveConfig(this.context, this.config);
     }
   }
 };
