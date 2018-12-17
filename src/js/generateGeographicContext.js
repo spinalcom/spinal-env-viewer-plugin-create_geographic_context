@@ -41,16 +41,20 @@ const MAX_NON_SYNCHRONIZED_NODES = 300;
  * @param {SpinalNode} parent Parent node from which to get the child
  * @param {Iterator<String>} nodeNames Iterator over the names of the nodes
  * @param {String} relationName Relation in which to search
- * @return {Array<SpinalNode | null} An array of the children that were found and of undefined
+ * @returns {Array<SpinalNode | null} An array of the children that were found and of undefined
  */
 async function getChildrenByNames(parent, nodeNames, relationName) {
   const children = await SpinalGraphService.getChildren(parent.id, relationName);
   const found = [];
 
   for (let name of nodeNames) {
-    found.push(children.find(child => {
-      return child.name.get() === name
-    }));
+    found.push(
+      children.find(
+        child => {
+          return child.name.get() === name
+        }
+      )
+    );
   }
 
   return found;
@@ -61,9 +65,9 @@ async function getChildrenByNames(parent, nodeNames, relationName) {
  * the temporary tree made of maps (nodes) and arrays (leafs), yielding every it adds a node.
  * @param {SpinalContext} context Context to which the nodes must belong
  * @param {SpinalNode} parent Parent to which the children must be added
- * @param {*} children Children to add to the parent
- * @param {*} layout Object containing the types of the nodes and names of the relations
- * @param {*} depth Depth of the recursion; determines what node type and relation name to use
+ * @param {Map<string> | Array<String>} children Children to add to the parent
+ * @param {Object} layout Object containing the types of the nodes and names of the relations
+ * @param {Number} depth Depth of the recursion; determines what node type and relation name to use
  * @yields {Promise<SpinalNode>} A promise of the last node that was added to the graph
  */
 async function* generateGeoContextRec(context, parent, children, layout, depth) {
@@ -74,19 +78,23 @@ async function* generateGeoContextRec(context, parent, children, layout, depth) 
     for (let child of foundChildren) {
       let [name, value] = entries.next().value;
 
-      if (typeof child === "undefined") {
+      if (child === undefined) {
         child = SpinalGraphService.createNode({
           name,
           type: layout.types[depth]
         });
 
-        yield SpinalGraphService.addChildInContext(
-          parent.id.get(),
-          child,
-          context.id.get(),
-          layout.relations[depth],
-          SPINAL_RELATION_TYPE
-        );
+        try {
+          yield SpinalGraphService.addChildInContext(
+            parent.id.get(),
+            child,
+            context.id.get(),
+            layout.relations[depth],
+            SPINAL_RELATION_TYPE
+          );
+        } catch (e) {
+          console.log("annoying sh*t")
+        }
 
         child = SpinalGraphService.getInfo(child);
       }
@@ -98,7 +106,10 @@ async function* generateGeoContextRec(context, parent, children, layout, depth) 
     parent = SpinalGraphService.getRealNode(parent.id.get());
 
     for (let child of children) {
-      yield bimObjectService.addBIMObject(context, parent, child.dbId, child.name);
+      try {
+        // Will throw error if we try to add the same node twice
+        yield bimObjectService.addBIMObject(context, parent, child.dbId, child.name);
+      } catch {}
     }
   }
 }
@@ -106,6 +117,7 @@ async function* generateGeoContextRec(context, parent, children, layout, depth) 
 /**
  * Waits for the nodes to be in the FileSystem.
  * @param {Array<Promise>} promises Array of promises containing the nodes
+ * @returns {Promise<nothing>} An empty promise
  */
 async function waitForFileSystem(promises) {
   let nodes = await Promise.all(promises);
@@ -130,7 +142,7 @@ async function waitForFileSystem(promises) {
  * @param {Object} layout Object containing the types, keys and relation names necessary to generate the context
  * @param {Array<Object>} props Properties to use
  * @param {Object<value: Number>} progression Object containing the progression of the generation
- * @return {SpinalContext} The geographic context
+ * @returns {SpinalContext} The geographic context
  */
 async function generateGeoContext(context, layout, props, progression) {
   progression.value = PROGRESS_BAR_SIZE_GET_PROPS;
