@@ -15,6 +15,10 @@
           {{invalid.length}} INVALID OBJECTS
         </md-button><br />
 
+        <md-checkbox v-model="defineRef">
+          Define reference objects
+        </md-checkbox>
+
         <md-button v-if="layout.types.length !== 0 && valid.length !== 0"
                    class="md-raised md-primary"
                    @click="generateContext">
@@ -57,6 +61,7 @@ export default {
       valid: [],
       invalid: [],
       propsLoaded: false,
+      defineRef: false,
       showLoad: false,
       progression: { value: 0 }
     };
@@ -65,6 +70,7 @@ export default {
     update() {
       if (this.update == "opened") {
         this.propsLoaded = false;
+        this.defineRef = false;
         this.showLoad = false;
         this.progression = { value: 0 };
       }
@@ -124,6 +130,7 @@ export default {
     },
     async generateContext() {
       this.showLoad = true;
+
       try {
         for (let [index, level] of this.config.levels.entries()) {
           if (level.option !== constants.LEVEL_OPTION_FIXED) {
@@ -133,6 +140,17 @@ export default {
           for (let prop of this.valid) {
             prop.properties.splice(index, 0, { value: level.param });
           }
+        }
+
+        if (this.defineRef) {
+          this.layout.types.push("ReferentialObject");
+          this.layout.relations.splice(-1, 0, "hasReferentialObject");
+
+          for (let prop of this.valid) {
+            prop.properties.push({ value: "ref" });
+          }
+          console.log("prop 0:", this.valid[0]);
+          console.log("this.layout:", this.layout);
         }
 
         await generateGeoContext(
