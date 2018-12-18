@@ -19,7 +19,7 @@
           Define reference objects
         </md-checkbox>
 
-        <md-button v-if="layout.types.length !== 0 && valid.length !== 0"
+        <md-button v-if="valid.length !== 0"
                    class="md-raised md-primary"
                    @click="generateContext">
           LAUNCH CONTEXT GENERATION
