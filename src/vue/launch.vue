@@ -124,6 +124,7 @@ export default {
     },
     async generateContext() {
       this.showLoad = true;
+
       try {
         for (let [index, level] of this.config.levels.entries()) {
           if (level.option !== constants.LEVEL_OPTION_FIXED) {

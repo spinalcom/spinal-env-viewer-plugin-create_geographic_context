@@ -72,13 +72,16 @@ export default {
     return {};
   },
   watch: {
-    update() {
-      if (this.update != "opened") {
-        return;
-      }
+    update: {
+      immediate: true,
+      handler() {
+        if (this.update != "opened") {
+          return;
+        }
 
-      if (this.config.useAllDbIds) {
-        this.config.referential = this.allDbIds.slice();
+        if (this.config.useAllDbIds) {
+          this.config.referential = this.allDbIds.slice();
+        }
       }
     }
   },
@@ -89,6 +92,7 @@ export default {
       } else {
         this.config.referential = this.allDbIds.slice();
       }
+
       this.$emit("configChanged");
     },
     addSelection() {
@@ -108,6 +112,7 @@ export default {
           queue.push(childId);
         });
       }
+
       this.$emit("configChanged");
     },
     clearReferential() {
