@@ -84,17 +84,13 @@ async function* generateGeoContextRec(context, parent, children, layout, depth) 
           type: layout.types[depth]
         });
 
-        try {
-          yield SpinalGraphService.addChildInContext(
-            parent.id.get(),
-            child,
-            context.id.get(),
-            layout.relations[depth],
-            SPINAL_RELATION_TYPE
-          );
-        } catch (e) {
-          console.log("annoying sh*t")
-        }
+        yield SpinalGraphService.addChildInContext(
+          parent.id.get(),
+          child,
+          context.id.get(),
+          layout.relations[depth],
+          SPINAL_RELATION_TYPE
+        );
 
         child = SpinalGraphService.getInfo(child);
       }
