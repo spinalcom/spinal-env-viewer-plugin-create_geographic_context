@@ -1,0 +1,16 @@
+{
+  "sourceMaps": "inline",
+  "only": [
+    "src/js/generateGeographicContext.js"
+  ],
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "6"
+        }
+      }
+    ]
+  ]
+}

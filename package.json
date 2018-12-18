@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "postinstall": "npm run build",
-    "build": "./build.sh",
+    "build": "babel src/js -d src/js_build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "browserify": {
@@ -25,11 +24,10 @@
     "spinal-env-viewer-panel-manager-service_spinalforgeextention": "https://github.com/spinalcom/spinal-env-viewer-panel-manager-service_spinalforgeextention.git",
     "spinal-env-viewer-plugin-bimobjectservice": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-bimobjectservice.git",
     "spinal-env-viewer-plugin-documentation-service": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-documentation-service.git",
+  },
+  "devDependencies": {
     "@babel/cli": "^7.1.5",
     "@babel/core": "^7.1.6",
     "@babel/preset-env": "^7.1.6"
-  },
-  "peerDependencies": {
-    "@babel/core": "6 | ^7.0.0-0"
   }
 }
