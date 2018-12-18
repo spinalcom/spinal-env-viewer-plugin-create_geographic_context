@@ -95,6 +95,7 @@ export default {
       return layout;
     },
     async loadProps() {
+      this.propsLoaded = false;
       this.layout = this.getLayout();
 
       if (this.layout === null) {
