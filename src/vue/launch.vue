@@ -149,8 +149,6 @@ export default {
           for (let prop of this.valid) {
             prop.properties.push({ value: "ref" });
           }
-          console.log("prop 0:", this.valid[0]);
-          console.log("this.layout:", this.layout);
         }
 
         await generateGeoContext(
