@@ -143,7 +143,7 @@ async function waitForFileSystem(promises) {
 async function generateGeoContext(context, layout, props, progression) {
   progression.value = PROGRESS_BAR_SIZE_GET_PROPS;
 
-  const tmpTree = createTmpTree(props);
+  const tmpTree = layout.types.length > 0 ? createTmpTree(props) : props;
   const incrProg = PROGRESS_BAR_SIZE_CREATE_GRAPH * MAX_NON_SYNCHRONIZED_NODES / props.length;
   let promises = [];
 
@@ -163,6 +163,7 @@ async function generateGeoContext(context, layout, props, progression) {
   if (promises.length !== 0) {
     await waitForFileSystem(promises);
   }
+
   progression.value = 100;
 }
 
