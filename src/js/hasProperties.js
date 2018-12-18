@@ -40,6 +40,7 @@ function getProperties(dbIds) {
   for (let dbId of dbIds) {
     props.push(promiseGetPorperties(model, dbId));
   }
+
   return Promise.all(props);
 }
 
