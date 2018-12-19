@@ -70,7 +70,7 @@ async function getChildrenByNames(parent, nodeNames, relationName) {
  * @param {Number} depth Depth of the recursion; determines what node type and relation name to use
  * @yields {Promise<SpinalNode>} A promise of the last node that was added to the graph
  */
-async function* generateGeoContextRec(context, parent, children, layout, depth) {
+async function* generateGeoContextRec(context, parent, children, layout, depth, ref) {
   if (children instanceof Map) {
     const foundChildren = await getChildrenByNames(parent, children.keys(), layout.relations[depth]);
     const entries = children.entries();
@@ -95,16 +95,20 @@ async function* generateGeoContextRec(context, parent, children, layout, depth) 
         child = SpinalGraphService.getInfo(child);
       }
 
-      yield* generateGeoContextRec(context, child, value, layout, depth + 1);
+      yield* generateGeoContextRec(context, child, value, layout, depth + 1, ref);
     }
   } else {
     context = SpinalGraphService.getRealNode(context.id.get());
     parent = SpinalGraphService.getRealNode(parent.id.get());
 
     for (let child of children) {
+      // Will throw error if we try to add the same node twice
       try {
-        // Will throw error if we try to add the same node twice
-        yield bimObjectService.addBIMObject(context, parent, child.dbId, child.name);
+        if (ref) {
+          yield bimObjectService.addReferenceObject(parent, child.dbId, child.name);
+        } else {
+          yield bimObjectService.addBIMObject(context, parent, child.dbId, child.name);
+        }
       } catch {}
     }
   }
@@ -138,9 +142,10 @@ async function waitForFileSystem(promises) {
  * @param {Object} layout Object containing the types, keys and relation names necessary to generate the context
  * @param {Array<Object>} props Properties to use
  * @param {Object<value: Number>} progression Object containing the progression of the generation
+ * @param {Boolean} ref True if the objects must be reference objects
  * @returns {SpinalContext} The geographic context
  */
-async function generateGeoContext(context, layout, props, progression) {
+async function generateGeoContext(context, layout, props, progression, ref) {
   progression.value = PROGRESS_BAR_SIZE_GET_PROPS;
 
   const tmpTree = layout.types.length > 0 ? createTmpTree(props) : props;
@@ -149,7 +154,7 @@ async function generateGeoContext(context, layout, props, progression) {
 
   progression.value += PROGRESS_BAR_SIZE_CREATE_TREE;
 
-  for await (let promise of generateGeoContextRec(context, context, tmpTree, layout, 0)) {
+  for await (let promise of generateGeoContextRec(context, context, tmpTree, layout, 0, ref)) {
     promises.push(promise);
 
     if (promises.length === MAX_NON_SYNCHRONIZED_NODES) {
