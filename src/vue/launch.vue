@@ -143,20 +143,12 @@ export default {
           }
         }
 
-        if (this.defineRef) {
-          this.layout.types.push("ReferentialObject");
-          this.layout.relations.splice(-1, 0, "hasReferentialObject");
-
-          for (let prop of this.valid) {
-            prop.properties.push({ value: "ref" });
-          }
-        }
-
         await generateGeoContext(
           this.context,
           this.layout,
           this.valid,
-          this.progression
+          this.progression,
+          this.defineRef
         );
       } catch (e) {
         console.error(e);
