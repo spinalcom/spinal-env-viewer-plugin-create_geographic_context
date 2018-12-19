@@ -108,6 +108,10 @@ export default {
 </script>
 
 <style>
+div#steppers {
+  background-color: unset;
+}
+
 #steppers * {
   box-sizing: border-box;
 }
