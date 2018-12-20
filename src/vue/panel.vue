@@ -102,6 +102,9 @@ export default {
     closed() {
       this.update = new String("closed");
     },
+    /**
+     * Called every time the config changes. Updates update and saves the current config.
+     */
     async configChanged() {
       this.update = new String("configChanged");
       await saveConfig(this.context, this.config);

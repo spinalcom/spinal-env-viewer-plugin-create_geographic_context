@@ -86,6 +86,9 @@ export default {
     }
   },
   methods: {
+    /**
+     * Updates the referential when the mode changes.
+     */
     changeMode(newValue) {
       if (!newValue) {
         this.clearReferential();
@@ -95,6 +98,9 @@ export default {
 
       this.$emit("configChanged");
     },
+    /**
+     * Adds the current selection to the referential. Discards all non-leaf dbIds.
+     */
     addSelection() {
       const selection = this.viewer.getSelection();
 
@@ -106,10 +112,16 @@ export default {
 
       this.$emit("configChanged");
     },
+    /**
+     * Empties the referential.
+     */
     clearReferential() {
       this.config.referential = [];
       this.$emit("configChanged");
     },
+    /**
+     * Selects all the dbIds in the referential.
+     */
     showReferential() {
       this.viewer.select(this.config.referential);
     }

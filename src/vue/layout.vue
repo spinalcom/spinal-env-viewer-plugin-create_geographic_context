@@ -69,14 +69,27 @@ export default {
     return {};
   },
   methods: {
+    /**
+     * Adds an empty level with the given option to the layout.
+     * @param {string} option Option of the level
+     */
     addLevel(option) {
       this.levels.push({ type: "", param: "", option: option });
       this.$emit("levelChanged");
     },
+    /**
+     * Removes a level from the layout.
+     * @param {number} index Index of the level in the layout
+     */
     removeLevel(index) {
       this.levels.splice(index, 1);
       this.$emit("levelChanged");
     },
+    /**
+     * Determines the index of the lowest type a level can be.
+     * @param {number} index The index of the level
+     * @returns {number} The index of the minimum type
+     */
     getMinTypeIndex(indexLevel) {
       let i = indexLevel;
 
@@ -96,6 +109,11 @@ export default {
         return minTypeIndex;
       }
     },
+    /**
+     * Determines the index of the highest type a level can be.
+     * @param {number} index The index of the level
+     * @returns {number} The index of the maximum type
+     */
     getMaxTypeIndex(indexLevel) {
       let i = indexLevel;
 
@@ -115,6 +133,11 @@ export default {
         return maxTypeIndex;
       }
     },
+    /**
+     * Determines all the types a level can be given its position in the layout.
+     * @param {number} index The index of the level
+     * @returns {Array<string>} An array of the available types for the level
+     */
     getAvailableTypes(index) {
       const minTypeIndex = this.getMinTypeIndex(index);
       const maxTypeIndex = this.getMaxTypeIndex(index);
@@ -123,6 +146,7 @@ export default {
       for (let i = minTypeIndex; i < maxTypeIndex; i++) {
         available.push(constants.GEOGRAPHIC_TYPES[i]);
       }
+
       return available.concat(constants.ZONE_TYPE);
     }
   }
