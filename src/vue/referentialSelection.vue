@@ -110,6 +110,7 @@ export default {
         this.config.referential.push(...leafs);
       }
 
+      this.config.referential = [...new Set(this.config.referential)];
       this.$emit("configChanged");
     },
     /**
