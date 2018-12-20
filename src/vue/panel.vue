@@ -90,6 +90,8 @@ export default {
   },
   methods: {
     async opened(option) {
+      // Using Strings (object, wrapper for strings) because otherwise the
+      // watchers won't trigger if the update is the same twice in a row
       this.update = new String("opened");
       this.context = option.context;
       this.config = await loadConfig(this.context);

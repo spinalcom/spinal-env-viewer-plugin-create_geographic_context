@@ -27,12 +27,23 @@ import {
   serviceDocumentation
 } from "spinal-env-viewer-plugin-documentation-service";
 
+/**
+ * Returns a promise that resolves when the properties from the dbId are loaded.
+ * @param {Object} model Model of the viewer
+ * @param {number} dbId DbId from which to load the properties
+ * @returns {Promise<Object>} Promise containing the properties of the BIM object
+ */
 function promiseGetPorperties(model, dbId) {
   return new Promise(resolve => {
     model.getProperties(dbId, resolve);
   });
 }
 
+/**
+ * Returns an array of all the properties of an array of dbIds.
+ * @param {Array<number>} dbIds DbIds to load
+ * @returns {Array<Object>} Array of loaded properties
+ */
 function getProperties(dbIds) {
   const model = window.spinal.ForgeViewer.viewer.model;
   const props = [];
@@ -44,6 +55,16 @@ function getProperties(dbIds) {
   return Promise.all(props);
 }
 
+/**
+ * Takes the properties of a BIM object and the keys that it must have 
+ * and returns a simplified object or null if the object doesn't have it.
+ * @param {Object} prop Properties of a BIM object
+ * @param {number} prop.dbId DbId of the object
+ * @param {string} prop.name Name of the object
+ * @param {Array<Object>} prop.properties Properties of the object
+ * @param {Array<string>} keys Keys that the object must have
+ * @returns {Object | null} The simplified object or null if the object doesn't have it
+ */
 function createSimplifiedProperty(prop, keys) {
   const simpleProp = {};
 
@@ -69,6 +90,11 @@ function createSimplifiedProperty(prop, keys) {
   return simpleProp;
 }
 
+/**
+ * Adds documentation attributes to forge properties.
+ * @param {Array<Object>} props Forge properties
+ * @returns {Promise<>} An empty promise
+ */
 async function addBIMObjectProps(props) {
   let BIMObjects = [];
   const validProps = props.slice();
@@ -113,6 +139,15 @@ async function addBIMObjectProps(props) {
   }
 }
 
+/**
+ * Takes an array of dbIds and some property keys and sort the dbIds
+ * between those who have and those who don't have the keys.
+ * @param {Array<number>} dbIds DbIds of the objects to test
+ * @param {Array<string>} keys Keys that the objects must have to be valid
+ * @returns {Object<valid, invalid>} An object containing the simplified properties of
+ * the valid objects in its 'valid' property and the dbIds of the invalid objects in
+ * its 'invalid' property.
+ */
 async function hasProperties(dbIds, keys) {
   const props = await getProperties(dbIds);
   const valid = [];

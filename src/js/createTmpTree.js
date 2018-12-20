@@ -22,6 +22,13 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
+/**
+ * Gets the values of the properties of the object.
+ * @param {Object} prop Simplified infos of an object
+ * @param {Array<Object>} prop.properties Array of the objects properties
+ * @param {string} prop.properties[].value Value of the property
+ * @returns {Array<string>} Array of the values of the properties of the object
+ */
 function getCoordinates(prop) {
   const coordinates = [];
 
@@ -32,6 +39,11 @@ function getCoordinates(prop) {
   return coordinates;
 }
 
+/**
+ * Sorts the nodes of the tree.
+ * @param {Map} tree Temporary tree
+ * @returns {Map} The sorted tree
+ */
 function sortTree(tree) {
   if (tree instanceof Array) {
     return tree.sort();
@@ -44,6 +56,11 @@ function sortTree(tree) {
   return new Map([...tree.entries()].sort());
 }
 
+/**
+ * Creates a temporary tree from properties.
+ * @param {Array<Object>} props Properties to use to create the tree
+ * @returns {Map} The root of the temporary tree
+ */
 function createTmpTree(props) {
   const root = new Map();
 
