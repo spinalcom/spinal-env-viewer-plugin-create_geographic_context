@@ -23,6 +23,7 @@ with this file. If not, see
 -->
 
 <template>
+  <!-- Only starts creating the component after everything is loaded -->
   <div v-if="context !== null && config !== null">
     <h3 id="context-name">
       {{this.context.name.get()}}
