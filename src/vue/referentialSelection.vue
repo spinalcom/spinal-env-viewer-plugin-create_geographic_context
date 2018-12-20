@@ -27,7 +27,7 @@ with this file. If not, see
     <md-checkbox v-model="config.useAllDbIds"
                  @change="changeMode"
                  class="md-primary">
-      Use whole digitital twin
+      Use whole digital twin
     </md-checkbox>
 
     <div v-show="!config.useAllDbIds">
@@ -52,7 +52,7 @@ with this file. If not, see
 </template>
 
 <script>
-import { getAllLeafDbIds } from "../js/utilitiesDbIds";
+import { getAllLeafDbIds, getLeafDbIds } from "../js/utilitiesDbIds";
 
 export default {
   name: "referentialSelection",
@@ -86,6 +86,9 @@ export default {
     }
   },
   methods: {
+    /**
+     * Updates the referential when the mode changes.
+     */
     changeMode(newValue) {
       if (!newValue) {
         this.clearReferential();
@@ -95,30 +98,30 @@ export default {
 
       this.$emit("configChanged");
     },
+    /**
+     * Adds the current selection to the referential. Discards all non-leaf dbIds.
+     */
     addSelection() {
-      const model = this.viewer.model;
-      const tree = model.getData().instanceTree;
       const selection = this.viewer.getSelection();
-      const queue = [...selection];
 
-      while (queue.length) {
-        let id = queue.shift();
+      for (let select of selection) {
+        let leafs = getLeafDbIds(select);
 
-        if (!this.config.referential.includes(id)) {
-          this.config.referential.push(id);
-        }
-
-        tree.enumNodeChildren(id, childId => {
-          queue.push(childId);
-        });
+        this.config.referential.push(...leafs);
       }
 
       this.$emit("configChanged");
     },
+    /**
+     * Empties the referential.
+     */
     clearReferential() {
       this.config.referential = [];
       this.$emit("configChanged");
     },
+    /**
+     * Selects all the dbIds in the referential.
+     */
     showReferential() {
       this.viewer.select(this.config.referential);
     }

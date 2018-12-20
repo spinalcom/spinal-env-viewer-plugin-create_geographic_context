@@ -73,10 +73,21 @@ export default {
         this.defineRef = false;
         this.showLoad = false;
         this.progression = { value: 0 };
+      } else if (this.update == "configChanged") {
+        this.propsLoaded = false;
       }
     }
   },
   methods: {
+    /**
+     * @typedef {Object} Layout An object containing all the informations of the layout
+     * @property {Array<string>} types The types of the levels
+     * @property {Array<string>} keys The keys of the levels
+     * @property {Array<string>} relations The relation names associated to the types
+     *
+     * Creates the layout from raw input of the user in the layout step.
+     * @returns {Layout} The loaded layout
+     */
     getLayout() {
       let layout = { types: [], keys: [], relations: [] };
 
@@ -94,6 +105,9 @@ export default {
       layout.relations.push(constants.EQUIPMENT_RELATION);
       return layout;
     },
+    /**
+     * Loads the valid and invalid props from the referential and the layout.
+     */
     async loadProps() {
       this.propsLoaded = false;
       this.layout = this.getLayout();
@@ -117,6 +131,9 @@ export default {
       this.invalid = res.invalid;
       this.propsLoaded = true;
     },
+    /**
+     * Selects the valid objects.
+     */
     selectValid() {
       const dbIds = [];
 
@@ -126,9 +143,15 @@ export default {
 
       this.viewer.select(dbIds);
     },
+    /**
+     * Selects the invalid objects.
+     */
     selectInvalid() {
       this.viewer.select(this.invalid);
     },
+    /**
+     * Generates the geographic context from the loaded layout and objects.
+     */
     async generateContext() {
       this.showLoad = true;
 

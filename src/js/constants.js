@@ -30,6 +30,7 @@ const {
   EQUIPMENT_RELATION
 } = geoConstants;
 
+// Types that will be displayed
 const SITE_TYPE = "Site";
 const BUILDING_TYPE = "Building";
 const FLOOR_TYPE = "Floor";

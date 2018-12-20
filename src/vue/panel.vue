@@ -35,7 +35,7 @@ with this file. If not, see
                md-label="Choose referential">
         <referential-selection :update="update"
                                :config="config"
-                               @configChanged="saveConfig" />
+                               @configChanged="configChanged" />
       </md-step>
 
       <md-step id="layout"
@@ -43,7 +43,7 @@ with this file. If not, see
                :md-error="layoutError">
         <layout :levels="config.levels"
                 :show-warnings="layoutError !== null"
-                @levelChanged="saveConfig" />
+                @levelChanged="configChanged" />
       </md-step>
 
       <md-step id="launch"
@@ -90,6 +90,8 @@ export default {
   },
   methods: {
     async opened(option) {
+      // Using Strings (object, wrapper for strings) because otherwise the
+      // watchers won't trigger if the update is the same twice in a row
       this.update = new String("opened");
       this.context = option.context;
       this.config = await loadConfig(this.context);
@@ -100,7 +102,11 @@ export default {
     closed() {
       this.update = new String("closed");
     },
-    async saveConfig() {
+    /**
+     * Called every time the config changes. Updates update and saves the current config.
+     */
+    async configChanged() {
+      this.update = new String("configChanged");
       await saveConfig(this.context, this.config);
     }
   }

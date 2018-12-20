@@ -22,6 +22,10 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
+/**
+ * Returns the instance tree of the forge viewer model.
+ * @returns {Object} The instance tree of the forge viewer model
+ */
 function getInstanceTree() {
   const model = window.spinal.ForgeViewer.viewer.model;
   const tree = model.getData().instanceTree;
@@ -29,6 +33,11 @@ function getInstanceTree() {
   return tree;
 }
 
+/**
+ * Takes a dbId and returns its children.
+ * @param {number} rootId Parent dbId
+ * @returns {Array<number>} Children dbIds
+ */
 function getDbIds(rootId) {
   const tree = getInstanceTree();
   const dbIds = [];
@@ -40,6 +49,11 @@ function getDbIds(rootId) {
   return dbIds;
 }
 
+/**
+ * Recursively gets all children dbIds of the root dbId.
+ * @param {number} rootId Root dbId
+ * @returns {Array<number>} The children dbIds of the root dbId
+ */
 function getDbIdsRec(rootId) {
   const tree = getInstanceTree();
   const queue = [rootId];
@@ -56,6 +70,11 @@ function getDbIdsRec(rootId) {
   return dbIds;
 }
 
+/**
+ * Returns all leaf dbIds children of the root dbId.
+ * @param {number} rootId Root dbId
+ * @returns {Array<number>} The children dbIds of the root dbId that are leafs in the tree
+ */
 function getLeafDbIds(rootId) {
   const tree = getInstanceTree();
   const queue = [rootId];
@@ -71,13 +90,19 @@ function getLeafDbIds(rootId) {
       hasChildren = true;
       queue.push(childId);
     });
+
     if (!hasChildren) {
       dbIds.push(id);
     }
   }
+
   return dbIds;
 }
 
+/**
+ * Gets all the dbIds in the instance tree of the viewer.
+ * @returns {Array<number>} All of the dbIds in the tree
+ */
 function getAllDbIds() {
   const tree = getInstanceTree();
   const rootId = tree.getRootId();
@@ -85,6 +110,10 @@ function getAllDbIds() {
   return getDbIdsRec(rootId);
 }
 
+/**
+ * Gets all the leaf dbIds in the instance tree of the viewer.
+ * @returns {Array<number>} All of the leaf dbIds in the tree
+ */
 function getAllLeafDbIds() {
   const tree = getInstanceTree();
   const rootId = tree.getRootId();
