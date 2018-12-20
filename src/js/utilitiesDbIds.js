@@ -71,6 +71,7 @@ function getLeafDbIds(rootId) {
       hasChildren = true;
       queue.push(childId);
     });
+
     if (!hasChildren) {
       dbIds.push(id);
     }

@@ -35,7 +35,7 @@ with this file. If not, see
                md-label="Choose referential">
         <referential-selection :update="update"
                                :config="config"
-                               @configChanged="saveConfig" />
+                               @configChanged="configChanged" />
       </md-step>
 
       <md-step id="layout"
@@ -43,7 +43,7 @@ with this file. If not, see
                :md-error="layoutError">
         <layout :levels="config.levels"
                 :show-warnings="layoutError !== null"
-                @levelChanged="saveConfig" />
+                @levelChanged="configChanged" />
       </md-step>
 
       <md-step id="launch"
@@ -100,7 +100,8 @@ export default {
     closed() {
       this.update = new String("closed");
     },
-    async saveConfig() {
+    async configChanged() {
+      this.update = new String("configChanged");
       await saveConfig(this.context, this.config);
     }
   }

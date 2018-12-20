@@ -73,6 +73,8 @@ export default {
         this.defineRef = false;
         this.showLoad = false;
         this.progression = { value: 0 };
+      } else if (this.update == "configChanged") {
+        this.propsLoaded = false;
       }
     }
   },
