@@ -130,8 +130,8 @@ async function addBIMObjectProps(props) {
 
     for (let attr of attributes[i]) {
       let convert = {
-        displayName: attr.label.get(),
-        displayValue: attr.value.get()
+        displayName: attr.element.label.get(),
+        displayValue: attr.element.value.get()
       };
 
       prop.properties.push(convert);
