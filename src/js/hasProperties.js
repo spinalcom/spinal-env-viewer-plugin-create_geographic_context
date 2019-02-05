@@ -120,7 +120,7 @@ async function addBIMObjectProps(props) {
   let attributes = [];
 
   for (let i = 0; i < BIMObjects.length; i++) {
-    attributes.push(serviceDocumentation.getAttributes(BIMObjects[i]));
+    attributes.push(serviceDocumentation.getAllAttributes(BIMObjects[i]));
   }
 
   attributes = await Promise.all(attributes);
@@ -130,8 +130,8 @@ async function addBIMObjectProps(props) {
 
     for (let attr of attributes[i]) {
       let convert = {
-        displayName: attr.element.label.get(),
-        displayValue: attr.element.value.get()
+        displayName: attr.label.get(),
+        displayValue: attr.value.get()
       };
 
       prop.properties.push(convert);
