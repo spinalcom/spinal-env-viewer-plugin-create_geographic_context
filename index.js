@@ -33,4 +33,4 @@ import extention from "./src/extention";
 import GenerateGeoContextApp from "./src/app";
 
 SpinalForgeExtention.registerExtention("generate_geographic_context", extention);
-spinalContextMenuService.registerApp("GraphManagerSideBar", new GenerateGeoContextApp());
+spinalContextMenuService.registerApp("GraphManagerSideBar", new GenerateGeoContextApp(), [3]);
