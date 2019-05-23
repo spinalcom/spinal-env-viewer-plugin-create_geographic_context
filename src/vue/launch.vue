@@ -37,6 +37,8 @@
 import * as constants from "../js/constants";
 import hasProperties from "../js/hasProperties";
 import generateGeoContext from "../js_build/generateGeographicContext";
+import ModelsManagerService from "spinal-service-models-manager"
+
 
 export default {
   name: "launch",
@@ -135,19 +137,22 @@ export default {
      * Selects the valid objects.
      */
     selectValid() {
+      const model = ModelsManagerService._getCurrentModel();
       const dbIds = [];
 
       for (let prop of this.valid) {
         dbIds.push(prop.dbId);
       }
 
-      this.viewer.select(dbIds);
+      this.viewer.select(dbIds, model);
     },
     /**
      * Selects the invalid objects.
      */
     selectInvalid() {
-      this.viewer.select(this.invalid);
+      const model = ModelsManagerService._getCurrentModel();
+
+      this.viewer.select(this.invalid, model);
     },
     /**
      * Generates the geographic context from the loaded layout and objects.
