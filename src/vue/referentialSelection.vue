@@ -127,7 +127,7 @@ export default {
      * Selects all the dbIds in the referential.
      */
     showReferential() {
-      const model = ModelsManagerService._getCurrentModel();
+      const model = window.spinal.assimblyManagerService._getCurrentModel();
       this.viewer.select(this.config.referential, model);
     }
   }
