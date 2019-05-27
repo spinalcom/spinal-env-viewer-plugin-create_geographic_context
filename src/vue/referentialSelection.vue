@@ -115,6 +115,7 @@ export default {
       this.config.referential = [...new Set(this.config.referential)];
       this.$emit("configChanged");
     },
+
     /**
      * Empties the referential.
      */

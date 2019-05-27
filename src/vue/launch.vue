@@ -137,7 +137,7 @@ export default {
      * Selects the valid objects.
      */
     selectValid() {
-      const model = ModelsManagerService._getCurrentModel();
+      const model = window.spinal.assimblyManagerService._getCurrentModel();
       const dbIds = [];
 
       for (let prop of this.valid) {
@@ -150,7 +150,7 @@ export default {
      * Selects the invalid objects.
      */
     selectInvalid() {
-      const model = ModelsManagerService._getCurrentModel();
+      const model = window.spinal.assimblyManagerService._getCurrentModel();
 
       this.viewer.select(this.invalid, model);
     },

@@ -22,8 +22,8 @@
     "spinal-env-viewer-graph-service": "git+https://github.com/spinalcom/Spinal-Graph-Service.git",
     "spinal-env-viewer-panel-manager-service": "https://github.com/spinalcom/spinal-env-viewer-panel-manager-service.git",
     "spinal-env-viewer-panel-manager-service_spinalforgeextention": "https://github.com/spinalcom/spinal-env-viewer-panel-manager-service_spinalforgeextention.git",
-    "spinal-env-viewer-plugin-bimobjectservice": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-bimobjectservice.git",
-    "spinal-env-viewer-plugin-documentation-service": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-documentation-service.git",
+    "spinal-env-viewer-plugin-bimobjectservice": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-bimobjectservice.git#multi",
+    "spinal-env-viewer-plugin-documentation-service": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-documentation-service.git#multi",
     "spinal-service-models-manager": "git+https://github.com/spinalcom/spinal-service-models-manager.git"
   },
   "devDependencies": {
