@@ -53,7 +53,6 @@ with this file. If not, see
 
 <script>
 import { getAllLeafDbIds, getLeafDbIds } from "../js/utilitiesDbIds";
-import ModelsManagerService from "spinal-service-models-manager"
 export default {
   name: "referentialSelection",
   props: {

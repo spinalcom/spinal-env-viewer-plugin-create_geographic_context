@@ -22,7 +22,6 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
 import {
   serviceDocumentation
 } from "spinal-env-viewer-plugin-documentation-service";
@@ -101,7 +100,7 @@ async function addBIMObjectProps(props) {
 
   for (let prop of props) {
     BIMObjects.push(
-      bimObjectService.getBIMObject(prop.dbId)
+      spinal.BimObjectService.getBIMObject(prop.dbId)
     );
   }
 

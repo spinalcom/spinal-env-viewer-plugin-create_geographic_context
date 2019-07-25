@@ -37,7 +37,7 @@
 import * as constants from "../js/constants";
 import hasProperties from "../js/hasProperties";
 import generateGeoContext from "../js_build/generateGeographicContext";
-import ModelsManagerService from "spinal-service-models-manager"
+
 
 
 export default {
@@ -107,10 +107,12 @@ export default {
       layout.relations.push(constants.EQUIPMENT_RELATION);
       return layout;
     },
+
     /**
      * Loads the valid and invalid props from the referential and the layout.
      */
     async loadProps() {
+      console.log("load Props")
       this.propsLoaded = false;
       this.layout = this.getLayout();
 
@@ -133,11 +135,12 @@ export default {
       this.invalid = res.invalid;
       this.propsLoaded = true;
     },
+
     /**
      * Selects the valid objects.
      */
     selectValid() {
-      const model = window.spinal.assimblyManagerService._getCurrentModel();
+      const model = window.spinal.BimObjectService.currentModel;
       const dbIds = [];
 
       for (let prop of this.valid) {
@@ -150,7 +153,7 @@ export default {
      * Selects the invalid objects.
      */
     selectInvalid() {
-      const model = window.spinal.assimblyManagerService._getCurrentModel();
+      const model = window.spinal.BimObjectService.currentModel;
 
       this.viewer.select(this.invalid, model);
     },
