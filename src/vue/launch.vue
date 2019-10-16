@@ -38,6 +38,8 @@ import * as constants from "../js/constants";
 import hasProperties from "../js/hasProperties";
 import generateGeoContext from "../js_build/generateGeographicContext";
 
+
+
 export default {
   name: "launch",
   props: {
@@ -105,10 +107,12 @@ export default {
       layout.relations.push(constants.EQUIPMENT_RELATION);
       return layout;
     },
+
     /**
      * Loads the valid and invalid props from the referential and the layout.
      */
     async loadProps() {
+      console.log("load Props")
       this.propsLoaded = false;
       this.layout = this.getLayout();
 
@@ -131,23 +135,27 @@ export default {
       this.invalid = res.invalid;
       this.propsLoaded = true;
     },
+
     /**
      * Selects the valid objects.
      */
     selectValid() {
+      const model = window.spinal.BimObjectService.currentModel;
       const dbIds = [];
 
       for (let prop of this.valid) {
         dbIds.push(prop.dbId);
       }
 
-      this.viewer.select(dbIds);
+      this.viewer.select(dbIds, model);
     },
     /**
      * Selects the invalid objects.
      */
     selectInvalid() {
-      this.viewer.select(this.invalid);
+      const model = window.spinal.BimObjectService.currentModel;
+
+      this.viewer.select(this.invalid, model);
     },
     /**
      * Generates the geographic context from the loaded layout and objects.

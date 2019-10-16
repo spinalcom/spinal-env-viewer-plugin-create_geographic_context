@@ -53,7 +53,6 @@ with this file. If not, see
 
 <script>
 import { getAllLeafDbIds, getLeafDbIds } from "../js/utilitiesDbIds";
-
 export default {
   name: "referentialSelection",
   props: {
@@ -102,8 +101,10 @@ export default {
      * Adds the current selection to the referential. Discards all non-leaf dbIds.
      */
     addSelection() {
-      const selection = this.viewer.getSelection();
-
+      const aggregateSelection = this.viewer.getAggregateSelection();
+      if (aggregateSelection.length <= 0)
+        return;
+      const selection = aggregateSelection[0].selection;
       for (let select of selection) {
         let leafs = getLeafDbIds(select);
 
@@ -113,6 +114,7 @@ export default {
       this.config.referential = [...new Set(this.config.referential)];
       this.$emit("configChanged");
     },
+
     /**
      * Empties the referential.
      */
@@ -124,7 +126,8 @@ export default {
      * Selects all the dbIds in the referential.
      */
     showReferential() {
-      this.viewer.select(this.config.referential);
+      const model = window.spinal.assimblyManagerService._getCurrentModel();
+      this.viewer.select(this.config.referential, model);
     }
   }
 };

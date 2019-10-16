@@ -27,7 +27,7 @@ import {
   SpinalNode,
   SpinalGraphService
 } from "spinal-env-viewer-graph-service";
-import bimObjectService from "spinal-env-viewer-plugin-bimobjectservice";
+
 
 import createTmpTree from "../js/createTmpTree";
 
@@ -43,10 +43,10 @@ const MAX_NON_SYNCHRONIZED_NODES = 300;
  * @param {String} relationName Relation in which to search
  * @returns {Array<SpinalNode | null} An array of the children that were found and of undefined
  */
-async function getChildrenByNames(parent, nodeNames, relationName) {
-  const children = await SpinalGraphService.getChildren(parent.id, relationName);
+async function getChildrenByNames( parent, nodeNames, relationName ) {
+  const children = await SpinalGraphService.getChildren( parent.id, relationName );
   const found = [];
-
+  
   for (let name of nodeNames) {
     found.push(
       children.find(
@@ -56,7 +56,7 @@ async function getChildrenByNames(parent, nodeNames, relationName) {
       )
     );
   }
-
+  
   return found;
 }
 
@@ -70,20 +70,21 @@ async function getChildrenByNames(parent, nodeNames, relationName) {
  * @param {Number} depth Depth of the recursion; determines what node type and relation name to use
  * @yields {Promise<SpinalNode>} A promise of the last node that was added to the graph
  */
-async function* generateGeoContextRec(context, parent, children, layout, depth, ref) {
+async function* generateGeoContextRec( context, parent, children, layout, depth, ref ) {
+  console.log( children );
   if (children instanceof Map) {
-    const foundChildren = await getChildrenByNames(parent, children.keys(), layout.relations[depth]);
+    const foundChildren = await getChildrenByNames( parent, children.keys(), layout.relations[depth] );
     const entries = children.entries();
-
+    
     for (let child of foundChildren) {
       let [name, value] = entries.next().value;
-
+      
       if (child === undefined) {
-        child = SpinalGraphService.createNode({
+        child = SpinalGraphService.createNode( {
           name,
           type: layout.types[depth]
-        });
-
+        } );
+        
         yield SpinalGraphService.addChildInContext(
           parent.id.get(),
           child,
@@ -91,25 +92,26 @@ async function* generateGeoContextRec(context, parent, children, layout, depth, 
           layout.relations[depth],
           SPINAL_RELATION_TYPE
         );
-
-        child = SpinalGraphService.getInfo(child);
+        
+        child = SpinalGraphService.getInfo( child );
       }
-
-      yield* generateGeoContextRec(context, child, value, layout, depth + 1, ref);
+      
+      yield* generateGeoContextRec( context, child, value, layout, depth + 1, ref );
     }
   } else {
-    context = SpinalGraphService.getRealNode(context.id.get());
-    parent = SpinalGraphService.getRealNode(parent.id.get());
-
     for (let child of children) {
+      
       // Will throw error if we try to add the same node twice
       try {
         if (ref) {
-          yield bimObjectService.addReferenceObject(parent, child.dbId, child.name);
+          yield window.spinal.BimObjectService.addReferenceObject( parent.id.get(), child.dbId, child.name );
         } else {
-          yield bimObjectService.addBIMObject(context, parent, child.dbId, child.name);
+          yield window.spinal.BimObjectService.addBIMObject( context.id.get(), parent.id.get(), child.dbId, child.name );
+          
         }
-      } catch {}
+      } catch ( e ) {
+        console.error( e )
+      }
     }
   }
 }
@@ -119,21 +121,21 @@ async function* generateGeoContextRec(context, parent, children, layout, depth, 
  * @param {Array<Promise>} promises Array of promises containing the nodes
  * @returns {Promise<nothing>} An empty promise
  */
-async function waitForFileSystem(promises) {
-  let nodes = await Promise.all(promises);
-
-  return new Promise(resolve => {
-    let inter = setInterval(() => {
-      nodes = nodes.filter(node => {
+async function waitForFileSystem( promises ) {
+  let nodes = await Promise.all( promises );
+  
+  return new Promise( resolve => {
+    let inter = setInterval( () => {
+      nodes = nodes.filter( node => {
         return FileSystem._objects[node._server_id] === undefined;
-      });
-
+      } );
+      
       if (nodes.length === 0) {
-        clearInterval(inter);
+        clearInterval( inter );
         resolve();
       }
-    }, 500);
-  });
+    }, 500 );
+  } );
 }
 
 /**
@@ -145,30 +147,30 @@ async function waitForFileSystem(promises) {
  * @param {Boolean} ref True if the objects must be reference objects
  * @returns {SpinalContext} The geographic context
  */
-async function generateGeoContext(context, layout, props, progression, ref) {
+async function generateGeoContext( context, layout, props, progression, ref ) {
   progression.value = PROGRESS_BAR_SIZE_GET_PROPS;
-
-  const tmpTree = layout.types.length > 0 ? createTmpTree(props) : props;
+  
+  const tmpTree = layout.types.length > 0 ? createTmpTree( props ) : props;
   const incrProg = PROGRESS_BAR_SIZE_CREATE_GRAPH * MAX_NON_SYNCHRONIZED_NODES / props.length;
   let promises = [];
-
+  
   progression.value += PROGRESS_BAR_SIZE_CREATE_TREE;
-
-  for await (let promise of generateGeoContextRec(context, context, tmpTree, layout, 0, ref)) {
-    promises.push(promise);
-
+  
+  for await (let promise of generateGeoContextRec( context, context, tmpTree, layout, 0, ref )) {
+    promises.push( promise );
+    
     if (promises.length === MAX_NON_SYNCHRONIZED_NODES) {
       progression.value += incrProg;
       // eslint-disable-next-line no-await-in-loop
-      await waitForFileSystem(promises);
+      await waitForFileSystem( promises );
       promises = [];
     }
   }
-
+  
   if (promises.length !== 0) {
-    await waitForFileSystem(promises);
+    await waitForFileSystem( promises );
   }
-
+  
   progression.value = 100;
 }
 
